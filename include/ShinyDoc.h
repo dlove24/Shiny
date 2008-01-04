@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (www.*)
+Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -39,6 +39,13 @@ Shiny is a low overhead, well documented and lightning fast C++ profiler. Easy t
 \subsection sub-1 What is this document?
 
 \ref ShinyDoc.h is a complete description of all the Shiny macros. Macro is a preprocessor directive that provides a mechanism for token replacement in your source code. Shiny uses macros to simplify interface and remain powerful. If the preprocessor SHINY_PROFILER is FALSE macro is ignored unless specified otherwise.
+
+\n
+\subsection sub2 Where can I download Shiny?
+
+\htmlonly
+<a href="https://sourceforge.net/project/showfiles.php?group_id=208504" >Browse All Files</a>
+\endhtmlonly
 
 \n
 \subsection sub2 Why did you create Shiny?
