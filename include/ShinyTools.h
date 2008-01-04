@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://sourceforge.net/projects/shinyprofiler)
+Copyright (c) 2007 Aidin Abedi (www.*)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -53,6 +53,7 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 #if SHINY_COMPILER == SHINY_COMPILER_MSVC
+#	pragma warning (push)
 #	pragma warning(disable: 4311)
 #endif
 
@@ -61,7 +62,7 @@ namespace Shiny {
 	}
 
 #if SHINY_COMPILER == SHINY_COMPILER_MSVC
-#	pragma warning(default: 4311)
+#	pragma warning (pop)
 #endif
 
 
