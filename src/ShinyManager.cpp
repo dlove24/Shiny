@@ -387,14 +387,8 @@ namespace Shiny {
 			return true;
 
 		} else if (!_initialized) {
-			a_ostream << "!!! No profile called !!!" << std::endl;
+			a_ostream << "!!! No profile started !!!" << std::endl;
 			return true;
-
-#if SHINY_PROFILER_HASENABLED == TRUE
-		} else if (!enabled) {
-			a_ostream << "!!! Profiler not enabled !!!" << std::endl;
-			return true;
-#endif
 		}
 
 		a_ostream << outputZonesAsString().c_str()
