@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi (www.*)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -152,6 +152,15 @@ restrictions:
 
 
 //-----------------------------------------------------------------------------
+// public preprocessor
+
+#if SHINY_PROFILER_HASENABLED == TRUE
+#define PROFILE_SET_ENABLED( boolean )										\
+	Shiny::ProfileManager::instance.enabled = boolean
+#endif
+
+
+//-----------------------------------------------------------------------------
 // internal preprocessors
 
 #define _PROFILE_ID_ZONE( name )			__ShinyZone_##name
@@ -227,6 +236,10 @@ namespace Shiny {
 #define PROFILE_SHARED_BLOCK(name)
 #define PROFILE_GET_SHARED_DATA(name)	Shiny::GetEmptyData()
 #define PROFILE_GET_ROOT_DATA()			Shiny::GetEmptyData()
+
+#if SHINY_PROFILER_HASENABLED == TRUE
+#define PROFILE_SET_ENABLED(boolean)
+#endif
 
 #endif
 

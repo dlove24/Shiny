@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi (www.*)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -46,6 +46,10 @@ namespace Shiny {
 		enum TABLE_SIZE {
 			TABLE_SIZE_INIT = 256
 		};
+
+#if SHINY_PROFILER_HASENABLED == TRUE
+		bool enabled;
+#endif
 
 		tick_t _lastTick;
 
@@ -145,6 +149,10 @@ namespace Shiny {
 		}
 
 		SHINY_INLINE void _beginNode(ProfileNodeCache* a_cache, ProfileZone* a_zone) {
+#if SHINY_PROFILER_HASENABLED == TRUE
+			if (!enabled) return;
+#endif
+
 			if (_curNode != (*a_cache)->parent)
 				*a_cache = _lookupNode(a_cache, a_zone);
 
@@ -152,6 +160,10 @@ namespace Shiny {
 		}
 
 		SHINY_INLINE void _beginNode(ProfileNode* a_node) {
+#if SHINY_PROFILER_HASENABLED == TRUE
+			if (!enabled) return;
+#endif
+
 			a_node->beginEntry();
 
 			_appendTicksToCurNode();
@@ -159,6 +171,10 @@ namespace Shiny {
 		}
 
 		SHINY_INLINE void _endCurNode(void) {
+#if SHINY_PROFILER_HASENABLED == TRUE
+			if (!enabled) return;
+#endif
+
 			_appendTicksToCurNode();
 			_curNode = _curNode->parent;
 		}
@@ -176,8 +192,13 @@ namespace Shiny {
 		bool output(const char *a_filename);
 		bool output(std::ostream &a_ostream = std::cout);
 
-		SHINY_INLINE std::string outputNodesAsString(void) { return OutputNodesAsString(&rootNode, nodeCount); }
-		SHINY_INLINE std::string outputZonesAsString(void) { return OutputZonesAsString(&rootZone, zoneCount); }
+		SHINY_INLINE std::string outputNodesAsString(void) {
+			return OutputNodesAsString(&rootNode, nodeCount);
+		}
+
+		SHINY_INLINE std::string outputZonesAsString(void) {
+			return OutputZonesAsString(&rootZone, zoneCount);
+		}
 
 		//
 

@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi (www.*)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -34,6 +34,10 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 	ProfileManager ProfileManager::instance = {
+#if SHINY_PROFILER_HASENABLED == TRUE
+		/* enabled = */ false,
+#endif
+
 		/* _lastTick = */ 0,
 		/* _curNode = */ &instance.rootNode,
 		/* _tableMask = */ 0,
@@ -129,6 +133,10 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 	void ProfileManager::update(float a_damping) {
+#if SHINY_PROFILER_HASENABLED == TRUE
+		if (!enabled) return;
+#endif
+
 		_appendTicksToCurNode();
 
 		if (!_firstUpdate) {
@@ -374,6 +382,21 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 	bool ProfileManager::output(std::ostream &a_ostream) {
+		if (_firstUpdate) {
+			a_ostream << "!!! Profile data not updated !!!" << std::endl;
+			return true;
+
+		} else if (!_initialized) {
+			a_ostream << "!!! No profile called !!!" << std::endl;
+			return true;
+
+#if SHINY_PROFILER_HASENABLED == TRUE
+		} else if (!enabled) {
+			a_ostream << "!!! Profiler not enabled !!!" << std::endl;
+			return true;
+#endif
+		}
+
 		a_ostream << outputZonesAsString().c_str()
 		          << "\n\n"
 		          << outputNodesAsString().c_str()
