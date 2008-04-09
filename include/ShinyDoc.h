@@ -38,7 +38,7 @@ Shiny is a low overhead, well documented and lightning fast C++ profiler. Easy t
 \n
 \subsection sub-1 What is this document?
 
-\ref ShinyDoc.h is a complete description of all the Shiny macros. Macro is a preprocessor directive that provides a mechanism for token replacement in your source code. Shiny uses macros to simplify interface and remain powerful. If the preprocessor SHINY_PROFILER is FALSE macro is ignored unless specified otherwise.
+\ref ShinyDoc.h is a complete description of all the Shiny macros. Macro is a preprocessor directive that provides a mechanism for token replacement in your source code. Shiny uses macros to simplify interface and remain powerful. If the preprocessor SHINY_PROFILER is defined as FALSE all Shiny macros are ignored unless specified otherwise.
 
 \n
 \subsection sub2 Where can I download Shiny?
@@ -48,17 +48,17 @@ Shiny is a low overhead, well documented and lightning fast C++ profiler. Easy t
 \endhtmlonly
 
 \n
-\subsection sub2 Why did you create Shiny?
+\subsection sub3 Why did you create Shiny?
 
 I was working on a graphics engine and I wanted to see the fruit of my optimizations and growth to each critical part. I needed something accurate, adapted to my main-loop & display and disgusting fast.
 
 \n
-\subsection sub3 What's the difference between other profilers?
+\subsection sub4 What's the difference between other profilers?
 
 Most profilers are external tools and can't adapt to the way your project is designed. The rest aren't really powerful enough. Shiny can adapt to your code flow and your display by your choice. Optimized to the bone, delivers both call tree/graph and flat profile and is so easy to use you'll never look at another profiler again.
 
 \n
-\subsection sub4 What features does Shiny support?
+\subsection sub5 What features does Shiny support?
 
 Where are some key features:
 -    Lightning fast and accurate profiling.
@@ -73,42 +73,42 @@ Where are some key features:
 
 
 \n
-\subsection sub5 How to switch Shiny on and off?
+\subsection sub6 How to switch Shiny on and off?
 
 Shiny is turned on or off at compile time. Define the pre-processor SHINY_PROFILER to TRUE or FALSE to enable or disable, before including header Shiny.h. Shiny can also be enabled or disabled in ShinyConfig.h. Default is on.
 
 \n
-\subsection sub6 Does Shiny support C language?
+\subsection sub7 Does Shiny support C language?
 
 No. I currently have no future plans to support C, although it is easy to adapt Shiny for C without touching the interface.
 
 \n
-\subsection sub7 Is Shiny thread-safe?
+\subsection sub8 Is Shiny thread-safe?
 
 Not yet.
 
 \n
-\subsection sub8 Why is profile data zero?
+\subsection sub9 Why is profile data zero?
 
 PROFILER_UPDATE must be called before outputting profile data.
 
 \n
-\subsection sub9 How to output latest profile data instead of averages?
+\subsection sub10 How to output latest profile data instead of averages?
 
 Set damping to zero when calling PROFILER_UPDATE.
 In code: PROFILER_UPDATE(0);
 
 \n
-\subsection sub10 Why is profile data "hit" count a floating-point?
+\subsection sub11 Why is profile data "hit" count a floating-point?
 
 Shiny uses the exponential moving average to calculate floating-point values for the latest profile data values. This can be customized by the damping parameter for PROFILER_UPDATE.
 
 \n
-\subsection sub11 Why is some profile data leaping seconds back or forward in time?
+\subsection sub12 Why is some profile data leaping seconds back or forward in time?
 
 Your platform has broken support for multi-core or multi-processor high-performance timing. You can solve this in three ways in Windows:
-(Recommended) Download the fix for this from Microsoft website.
--    Call SetProcessAffinityMask or SetThreadAffinityMask at start of program to lock to a specific CPU.
+-    (Recommended) Download the fix for this from Microsoft website.
+-    Call SetProcessAffinityMask or SetThreadAffinityMask at start of program to lock your thread/process to a specific CPU.
 -    (Not Recommended) Use timeGetTime instead of QueryPerformanceCounter in the Shiny source code.
 
 */
