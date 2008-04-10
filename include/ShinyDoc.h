@@ -120,11 +120,14 @@ This will create and begin a profile with the caller function name until end of 
 
 \note Must only be called at most once per function
 
-\Example
 \code
-{working example}
-\b Output:
-{output from working example}
+//Exmaple Code:
+
+void foobar() {
+	PROFILE_FUNC(); // beginning of your function
+
+	// some code
+}
 \endcode
 
 \see
@@ -147,11 +150,16 @@ This will create and begin a profile, execute code, and end profile. PROFILE_COD
 
 \param Code to be executed and profiled
 
-\Example
 \code
-{working example}
-\b Output:
-{output from working example}
+//Exmaple Code:
+
+void foobar() {
+	int x, y, z;
+
+	// some code
+
+	PROFILE_CODE(x = y + z); // profile code line: x = y + z;
+}
 \endcode
 
 \see
@@ -162,7 +170,7 @@ PROFILE_UPDATE_ALL
 PROFILE_OUTPUT_ALL
 */
 
-#define PROFILE_CODE(code)
+#define PROFILE_CODE(Code)
 
 
 //-----------------------------------------------------------------------------
@@ -174,11 +182,20 @@ This will create and begin a profile with the specified name until end of block.
 
 \param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules
 
-\Example
 \code
-{working example}
-\b Output:
-{output from working example}
+//Exmaple Code:
+
+void foobar() {
+	// unprofiled code
+	{
+		// unprofiled code
+
+		PROFILE_BLOCK(CuteName);
+
+		// profiled code identified with name "CuteName"
+	}
+	// unprofiled code
+}
 \endcode
 
 \see
@@ -189,7 +206,7 @@ PROFILE_UPDATE_ALL
 PROFILE_OUTPUT_ALL
 */
 
-#define PROFILE_BLOCK(name)
+#define PROFILE_BLOCK(Name)
 
 
 //-----------------------------------------------------------------------------
@@ -201,22 +218,62 @@ This will create and begin a profile with the specified name until PROFILE_END i
 
 \param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules
 
-\Example
 \code
-{working example}
-\b Output:
-{output from working example}
+//Exmaple Code:
+
+void foobar() {
+	// unprofiled code
+	
+	PROFILE_BEGIN(CuteName);
+
+	// profiled code identified with name "CuteName"
+
+	PROFILE_END();
+
+	// unprofiled code
+}
 \endcode
 
 \see
 PROFILE_FUNC
 PROFILE_CODE
-PROFILE_BLOCK
+PROFILE_BLOKC
 PROFILE_UPDATE_ALL
 PROFILE_OUTPUT_ALL
 */
 
-#define PROFILE_BEGIN()
+#define PROFILE_BEGIN(Name)
+
+
+//-----------------------------------------------------------------------------
+//! End current profile
+/*! 
+This will end the profile last called. Call this after PROFILE_BEGIN or PROFILE_SHARED_BEGIN.
+
+\note If no current profile is running any call to PROFILE_END is ignored.
+
+\code
+//Exmaple Code:
+
+void foobar() {
+	// unprofiled code
+	
+	PROFILE_BEGIN(CuteName);
+
+	// profiled code identified with name "CuteName"
+
+	PROFILE_END();
+
+	// unprofiled code
+}
+\endcode
+
+\see
+PROFILE_BEGIN
+PROFILE_SHARED_BEGIN
+*/
+
+#define PROFILE_END()
 
 
 //-----------------------------------------------------------------------------
@@ -234,11 +291,9 @@ PROFILE_OUTPUT_ALL
 
 \return {details of any return values}
 
-\Example
 \code
+//Exmaple Code:
 {working example}
-\b Output:
-{output from working example}
 \endcode
 
 \see
