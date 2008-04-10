@@ -21,7 +21,9 @@ restrictions:
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "ShinyManager.h"
+#include "Shiny.h"
+
+//#include "ShinyManager.h"
 
 #include <fstream>
 #include <memory.h>
@@ -404,3 +406,340 @@ namespace Shiny {
 } // namespace Shiny
 
 #endif // if SHINY_PROFILER == TRUE
+
+
+//#include "ShinyNode.h"
+//#include "ShinyZone.h"
+
+#include <memory.h>
+
+
+#if SHINY_PROFILER == TRUE
+namespace Shiny {
+
+//-----------------------------------------------------------------------------
+
+	ProfileNode ProfileNode::_dummy = {
+		/* _last = */ { 0, 0 },
+		/* zone = */ NULL,
+		/* parent = */ NULL,
+		/* nextSibling = */ NULL,
+		/* firstChild = */ NULL,
+		/* lastChild = */ NULL
+	};
+
+
+//-----------------------------------------------------------------------------
+
+	void ProfileNode::updateTree(float a_damping) {
+		data.selfTicks.cur = _last.selfTicks;
+		data.entryCount.cur = _last.entryCount;
+
+		zone->data.selfTicks.cur += _last.selfTicks;
+		zone->data.entryCount.cur += _last.entryCount;
+		
+		data.childTicks.cur = 0;
+		_last.selfTicks = 0;
+		_last.entryCount = 0;
+
+		if (!zone->isUpdating()) {
+
+			zone->enableUpdating();
+			if (firstChild) firstChild->updateTree(a_damping);
+			
+			zone->data.childTicks.cur += data.childTicks.cur;
+			zone->disableUpdating();
+
+		} else {
+			zone->data.childTicks.cur -= data.selfTicks.cur;
+			if (firstChild) firstChild->updateTree(a_damping);
+		}
+
+		data.computeAverage(a_damping);
+
+		if (!isRoot()) parent->data.childTicks.cur += data.selfTicks.cur + data.childTicks.cur;
+		if (nextSibling) nextSibling->updateTree(a_damping);
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	const ProfileNode* ProfileNode::findNextInTree(void) const {
+		if (firstChild) {
+			return firstChild;
+
+		} else if (nextSibling) {
+			return nextSibling;
+
+		} else {
+			ProfileNode* pParent = parent;
+
+			while (!pParent->isRoot()) {
+				if (pParent->nextSibling) return pParent->nextSibling;
+				else pParent = pParent->parent;
+			}
+
+			return NULL;
+		}
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	void ProfileNode::clear(void) {
+		memset(this, 0, sizeof(ProfileNode));
+	}
+
+
+} // namespace Shiny
+#endif
+
+
+//#include "ShinyNodePool.h"
+//#include "ShinyTools.h"
+
+#include <memory.h>
+#include <malloc.h>
+
+#if SHINY_PROFILER == TRUE
+namespace Shiny {
+
+
+//-----------------------------------------------------------------------------
+
+	ProfileNodePool* ProfileNodePool::createNodePool(uint32_t a_items) {
+		ProfileNodePool* pPool = static_cast<ProfileNodePool*>(
+			malloc(sizeof(ProfileNodePool) + sizeof(T) * (a_items - 1)));
+
+		pPool->nextPool = NULL;
+		pPool->_nextItem = &pPool->_items[0];
+		pPool->endOfItems = &pPool->_items[a_items];
+
+		memset(&pPool->_items[0], 0, a_items * sizeof(T));
+		return pPool;
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	uint32_t ProfileNodePool::memoryUsageChain(void) {
+		uint32_t bytes = ptr32(
+			reinterpret_cast<void*>(
+				  reinterpret_cast<char*>(endOfItems)
+				- reinterpret_cast<char*>(this)));
+
+		if (nextPool) bytes += nextPool->memoryUsageChain();
+		return bytes;
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	void ProfileNodePool::destroy(void) {
+		T* pItem = firstItem();
+
+		while (pItem != unusedItem())
+			(pItem++)->destroy();
+
+		if (nextPool) nextPool->destroy();
+		free(this);
+	}
+
+} // namespace Shiny
+#endif
+
+
+//#include "ShinyOutput.h"
+
+#include <stdio.h>
+
+#if SHINY_COMPILER == SHINY_COMPILER_MSVC
+#	pragma warning(disable: 4996)
+#	define snprintf		_snprintf
+#	define TRAILING		0
+
+#else
+#	define TRAILING		1
+#endif
+
+#if SHINY_PROFILER == TRUE
+namespace Shiny {
+
+
+//-----------------------------------------------------------------------------
+
+	void _printHeader(char *dest, const char *a_title) {
+		snprintf(dest, OUTPUT_WIDTH_SUM + TRAILING,
+			"%-*s %*s %*s %*s",
+			OUTPUT_WIDTH_NAME, a_title,
+			OUTPUT_WIDTH_HIT, "hits",
+			OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1, "self time",
+			OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1, "total time");
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	void _printData(char *dest, const ProfileData &a_data, float a_topercent) {
+		float totalTicksAvg = a_data.totalTicksAvg();
+		const TimeUnit *selfUnit = GetTimeUnit(a_data.selfTicks.avg);
+		const TimeUnit *totalUnit = GetTimeUnit(totalTicksAvg);
+
+		snprintf(dest, OUTPUT_WIDTH_DATA + TRAILING,
+			" %*.1f %*.0f %-2s %*.0f%% %*.0f %-2s %*.0f%%",
+			OUTPUT_WIDTH_HIT, a_data.entryCount.avg,
+			OUTPUT_WIDTH_TIME, a_data.selfTicks.avg * selfUnit->invTickFreq, selfUnit->suffix,
+			OUTPUT_WIDTH_PERC, a_data.selfTicks.avg * a_topercent,
+			OUTPUT_WIDTH_TIME, totalTicksAvg * totalUnit->invTickFreq, totalUnit->suffix,
+			OUTPUT_WIDTH_PERC, totalTicksAvg * a_topercent);
+	}
+
+//-----------------------------------------------------------------------------
+
+	std::string OutputNodesAsString(const ProfileNode *a_root, uint32_t a_count) {
+		float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
+		std::string str;
+
+		str.resize((1 + a_count) * (OUTPUT_WIDTH_SUM + 1) - 1);
+		char *s = &str[0];
+
+		_printHeader(s, "call tree");
+		s += OUTPUT_WIDTH_SUM;
+		(*s++) = '\n';
+
+		const ProfileNode *node = a_root;
+
+		do {
+			int offset = node->entryLevel * 2;
+			snprintf(s, OUTPUT_WIDTH_NAME + TRAILING, "%*s%-*s",
+				offset, "", OUTPUT_WIDTH_NAME - offset, node->zone->name);
+
+			s += OUTPUT_WIDTH_NAME;
+
+			_printData(s, node->data, fTicksToPc);
+
+			s += OUTPUT_WIDTH_DATA;
+			(*s++) = '\n';
+
+			node = node->findNextInTree();
+		} while (node);
+
+		*(--s) = '\0';
+		return str;
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	std::string OutputZonesAsString(const ProfileZone *a_root, uint32_t a_count) {
+		float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
+		std::string str;
+
+		str.resize((1 + a_count) * (OUTPUT_WIDTH_SUM + 1) - 1);
+		char *s = &str[0];
+
+		_printHeader(s, "flat profile");
+		s += OUTPUT_WIDTH_SUM;
+		(*s++) = '\n';
+
+		const ProfileZone *zone = a_root;
+
+		do {
+			snprintf(s, OUTPUT_WIDTH_NAME + TRAILING, "%-*s",
+				OUTPUT_WIDTH_NAME, zone->name);
+
+			s += OUTPUT_WIDTH_NAME;
+
+			_printData(s, zone->data, fTicksToPc);
+
+			s += OUTPUT_WIDTH_DATA;
+			(*s++) = '\n';
+
+			zone = zone->next;
+		} while (zone);
+
+		*(--s) = '\0';
+		return str;
+	}
+
+} // namespace Shiny
+#endif
+
+
+//#include "ShinyTools.h"
+
+#if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
+#include <sys/time.h>
+#endif
+
+namespace Shiny {
+
+
+//-----------------------------------------------------------------------------
+
+	const TimeUnit* GetTimeUnit(float ticks) {
+		static TimeUnit unit[] = {
+			{ GetTickFreq() / 1.0f			, GetTickInvFreq() * 1.0f			, "s" },
+			{ GetTickFreq() / 1000.0f		, GetTickInvFreq() * 1000.0f		, "ms" },
+			{ GetTickFreq() / 1000000.0f	, GetTickInvFreq() * 1000000.0f		, "us" },
+			{ GetTickFreq() / 1000000000.0f	, GetTickInvFreq() * 1000000000.0f	, "ns" }
+		};
+
+		if (unit[0].tickFreq < ticks) return &unit[0];
+		else if (unit[1].tickFreq < ticks) return &unit[1];
+		else if (unit[2].tickFreq < ticks) return &unit[2];
+		else return &unit[3];
+	}
+
+
+//-----------------------------------------------------------------------------
+
+#if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
+
+	tick_t _InitTickFreq(void) {
+		tick_t freq;
+
+		QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&freq));
+		return freq;
+	}
+
+	void GetTicks(tick_t *p) {
+		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(p));
+	}
+
+	tick_t GetTickFreq(void) {
+		static tick_t freq = _InitTickFreq();
+		return freq;
+	}
+
+	float GetTickInvFreq(void) {
+		static float invfreq = 1.0f / GetTickFreq();
+		return invfreq;
+	}
+
+
+//-----------------------------------------------------------------------------
+
+#elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
+
+	void GetTicks(tick_t *p) {
+		timeval time;
+		gettimeofday(&time, NULL);
+
+		*p = time.tv_sec * 1000000 + time.tv_usec;
+	}
+
+	tick_t GetTickFreq(void) {
+		return 1000000;
+	}
+
+	float GetTickInvFreq(void) {
+		return 1.0f / 1000000.0f;
+	}
+
+#endif
+} // namespace Shiny
