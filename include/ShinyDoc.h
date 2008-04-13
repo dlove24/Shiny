@@ -118,7 +118,7 @@ Your platform has broken support for multi-core or multi-processor high-performa
 /*!
 This will create and begin a profile with the caller function name until end of block. Call this in the beginning of your function.
 
-\note Must only be called at most once per function
+\note Must only be called at most once per function.
 
 \code
 //Exmaple Code:
@@ -146,9 +146,9 @@ PROFILE_OUTPUT_ALL
 /*! 
 This will create and begin a profile, execute code, and end profile. PROFILE_CODE is typically used when you want to profile a function call without touching the function source code or profiling every call.
 
-\note Any return value from the executed code will be lost
+\note Any return value from the executed code will be lost.
 
-\param Code to be executed and profiled
+\param Code to be executed and profiled.
 
 \code
 //Exmaple Code:
@@ -178,9 +178,9 @@ PROFILE_OUTPUT_ALL
 /*! 
 This will create and begin a profile with the specified name until end of block. Call this in the beginning of your code block (function, for-loop, if-statment, etc).
 
-\note Must only be called at most once per code block
+\note Must only be called at most once per code block.
 
-\param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules
+\param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules.
 
 \code
 //Exmaple Code:
@@ -216,7 +216,7 @@ This will create and begin a profile with the specified name until PROFILE_END i
 
 \note When the profile is finished program must call PROFILE_END.
 
-\param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules
+\param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules.
 
 \code
 //Exmaple Code:
@@ -274,6 +274,67 @@ PROFILE_SHARED_BEGIN
 */
 
 #define PROFILE_END()
+
+
+//-----------------------------------------------------------------------------
+//! Create a shared profile.
+/*! 
+Creates a shared profile with the specified name. Add this outside of any function or class block and use the same profile in multiple areas inside the same source file. Call PROFILE_SHARED_BLOCK or PROFILE_SHARED_BEGIN with name to use profile.
+
+\note PROFILE_SHARED_GLOBAL or PROFILE_SHARED_MEMBER can be used to expand profile for multiple source files.  If profile is declared in a class or namespace the name in PROFILE_SHARED_DEFINE prefix format class::name where class is an identifier name.
+
+\param Name of profile to be created. Name is an identifier (not a string) and uses C++ naming rules.
+
+
+\code
+//Exmaple Code:
+
+PROFILE_SHARED_DEFINE(myprofile)
+
+function ()
+
+\endcode
+
+\see
+PROFILE_SHARED_EXTERN
+PROFILE_SHARED_STATIC
+PROFILE_BEGIN
+PROFILE_UPDATE_ALL
+PROFILE_OUTPUT_ALL
+*/
+
+#define PROFILE_SHARED_DEFINE()
+
+
+//-----------------------------------------------------------------------------
+//! short
+/*! 
+{Specialisation offered by the function A}
+
+\note Must only be called at most once per function
+
+\param {details of 1st parameters used}
+
+\param {details of 2nd parameters used}
+
+\param {etc...}
+
+\return {details of any return values}
+
+\code
+//Exmaple Code:
+{working example}
+\endcode
+
+\see
+PROFILE_CODE
+PROFILE_BLOCK
+PROFILE_BEGIN
+PROFILE_UPDATE_ALL
+PROFILE_OUTPUT_ALL
+*/
+
+#define PROFILE_()
 
 
 //-----------------------------------------------------------------------------
