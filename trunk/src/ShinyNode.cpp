@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -25,6 +25,7 @@ restrictions:
 #include "ShinyZone.h"
 
 #include <memory.h>
+#include <stack>
 
 
 #if SHINY_PROFILER == TRUE
@@ -44,7 +45,23 @@ namespace Shiny {
 
 //-----------------------------------------------------------------------------
 
-	void ProfileNode::updateTree(float a_damping) {
+	struct ProfileNodeState {
+		ProfileNode *node;
+		bool zoneUpdating;
+
+		ProfileNodeState(ProfileNode *a_node);
+		ProfileNode* finishAndGetNext(float a_damping);
+		ProfileNode* finishAndGetNext(void);
+	};
+
+
+//-----------------------------------------------------------------------------
+
+	ProfileNodeState::ProfileNodeState(ProfileNode *a_node) : node(a_node) {
+		ProfileZone *zone = node->zone;
+		ProfileData &data = node->data;
+		ProfileLastData &_last = node->_last;
+
 		data.selfTicks.cur = _last.selfTicks;
 		data.entryCount.cur = _last.entryCount;
 
@@ -55,23 +72,98 @@ namespace Shiny {
 		_last.selfTicks = 0;
 		_last.entryCount = 0;
 
-		if (!zone->isUpdating()) {
-
+		zoneUpdating = !zone->isUpdating();
+		if (zoneUpdating) {
 			zone->enableUpdating();
-			if (firstChild) firstChild->updateTree(a_damping);
-			
-			zone->data.childTicks.cur += data.childTicks.cur;
-			zone->disableUpdating();
-
 		} else {
 			zone->data.childTicks.cur -= data.selfTicks.cur;
-			if (firstChild) firstChild->updateTree(a_damping);
+		}
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	ProfileNode* ProfileNodeState::finishAndGetNext(float a_damping) {
+		ProfileZone *zone = node->zone;
+		ProfileData &data = node->data;
+
+		if (zoneUpdating) {					
+			zone->data.childTicks.cur += data.childTicks.cur;
+			zone->disableUpdating();
 		}
 
 		data.computeAverage(a_damping);
 
-		if (!isRoot()) parent->data.childTicks.cur += data.selfTicks.cur + data.childTicks.cur;
-		if (nextSibling) nextSibling->updateTree(a_damping);
+		if (!node->isRoot())
+			node->parent->data.childTicks.cur += data.selfTicks.cur + data.childTicks.cur;
+
+		return node->nextSibling;
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	ProfileNode* ProfileNodeState::finishAndGetNext(void) {
+		ProfileZone *zone = node->zone;
+		ProfileData &data = node->data;
+
+		if (zoneUpdating) {					
+			zone->data.childTicks.cur += data.childTicks.cur;
+			zone->disableUpdating();
+		}
+
+		data.copyAverage();
+
+		if (!node->isRoot())
+			node->parent->data.childTicks.cur += data.selfTicks.cur + data.childTicks.cur;
+
+		return node->nextSibling;
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	void ProfileNode::updateTree(float a_damping) {
+		std::stack<ProfileNodeState> up;
+		ProfileNode *node = this;
+
+		for (;;) {
+			do {
+				up.push(ProfileNodeState(node));
+				node = node->firstChild;
+			} while (node);
+
+			for (;;) {
+				node = up.top().finishAndGetNext(a_damping);
+				up.pop();
+
+				if (node) break;
+				else if (up.empty()) return;
+			}
+		}
+	}
+
+
+//-----------------------------------------------------------------------------
+
+	void ProfileNode::updateTree(void) {
+		std::stack<ProfileNodeState> up;
+		ProfileNode *node = this;
+
+		for (;;) {
+			do {
+				up.push(ProfileNodeState(node));
+				node = node->firstChild;
+			} while (node);
+
+			for (;;) {
+				node = up.top().finishAndGetNext();
+				up.pop();
+
+				if (node) break;
+				else if (up.empty()) return;
+			}
+		}
 	}
 
 

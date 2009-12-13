@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -46,6 +46,12 @@ restrictions:
 
 #define PROFILE_DESTROY_ALL()												\
 	Shiny::ProfileManager::instance.destroy()
+
+#define PROFILE_CLEAR()														\
+	Shiny::ProfileManager::instance.clear()
+
+#define PROFILE_SORT_ZONES()												\
+	Shiny::ProfileManager::instance.sortZones()
 
 
 //-----------------------------------------------------------------------------
@@ -222,6 +228,7 @@ namespace Shiny {
 
 #define PROFILE_UPDATE_ALL(...)
 #define PROFILE_OUTPUT_ALL(...)
+#define PROFILE_CLEAR(...)
 #define PROFILE_GET_TREE_OUTPUT()		std::string()
 #define PROFILE_GET_FLAT_OUTPUT()		std::string()
 #define PROFILE_DESTROY_ALL	()

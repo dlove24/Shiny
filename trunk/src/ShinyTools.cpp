@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -66,7 +66,7 @@ namespace Shiny {
 		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(p));
 	}
 
-	tick_t GetTickFreq(void) {
+	const tick_t& GetTickFreq(void) {
 		static tick_t freq = _InitTickFreq();
 		return freq;
 	}
@@ -88,7 +88,7 @@ namespace Shiny {
 		*p = time.tv_sec * 1000000 + time.tv_usec;
 	}
 
-	tick_t GetTickFreq(void) {
+	const tick_t& GetTickFreq(void) {
 		return 1000000;
 	}
 

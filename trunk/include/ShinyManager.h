@@ -1,21 +1,21 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial
+Permission is granted to anyone to use this software for any purpose, including commercial 
 applications, and to alter it and redistribute it freely, subject to the following
 restrictions:
 
-    1. The origin of this software must not be misrepresented; you must not claim that
-       you wrote the original software. If you use this software in a product,
-       an acknowledgment in the product documentation would be appreciated but is
+    1. The origin of this software must not be misrepresented; you must not claim that 
+       you wrote the original software. If you use this software in a product, 
+       an acknowledgment in the product documentation would be appreciated but is 
        not required.
 
-    2. Altered source versions must be plainly marked as such, and must not be
+    2. Altered source versions must be plainly marked as such, and must not be 
        misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source distribution.
@@ -108,7 +108,8 @@ namespace Shiny {
 		void _init(void) {
 			_initialized = true;
 
-			rootNode.beginEntry();
+			rootNode._last.entryCount = 1;
+			rootNode._last.selfTicks = 0;
 			GetTicks(&_lastTick);
 		}
 
@@ -123,12 +124,12 @@ namespace Shiny {
 #if SHINY_PROFILER_LOOKUPRATE == TRUE
 		SHINY_INLINE void _incLookup(void) { _lookupCount++; }
 		SHINY_INLINE void _incLookupSuccess(void) { _lookupSuccessCount++; }
-		SHINY_INLINE float lookupSuccessRate(void) const { return ((float) _lookupSuccessCount) / ((float) _lookupCount); }
+		SHINY_INLINE float getLookupRate(void) const { return ((float) _lookupSuccessCount) / ((float) _lookupCount); }
 
 #else
 		SHINY_INLINE void _incLookup(void) {}
 		SHINY_INLINE void _incLookupSuccess(void) {}
-		SHINY_INLINE float lookupSuccessRate(void) const { return -1; }
+		SHINY_INLINE float getLookupRate(void) const { return -1; }
 #endif
 
 		void _resetZones(void);
@@ -139,7 +140,7 @@ namespace Shiny {
 		uint32_t staticMemInBytes(void) {
 			// ASSUME: zones and cache are used as intended; throught the macros
 
-			return sizeof(instance) + sizeof(_dummyNodeTable[0]) + sizeof(ProfileNode::_dummy)
+			return sizeof(this) + sizeof(_dummyNodeTable[0]) + sizeof(ProfileNode::_dummy)
 				 + (zoneCount - 1) * (sizeof(ProfileZone) + sizeof(ProfileNodeCache));
 		}
 
@@ -200,11 +201,19 @@ namespace Shiny {
 			return OutputZonesAsString(&rootZone, zoneCount);
 		}
 
+		void sortZones(void) {
+			if (rootZone.next)
+				rootZone.next = rootZone.next->sortChain();
+		}
+
 		//
 
-		static void enumerateNodes(void (*a_func)(const ProfileNode*),
-			const ProfileNode* a_node = &instance.rootNode)
-		{
+		void enumerateNodes(void (*a_func)(const ProfileNode*)) { enumerateNodes(a_func, &rootNode); }
+		template <class T> void enumerateNodes(T* a_this, void (T::*a_func)(const ProfileNode*)) { enumerateNodes(a_this, a_func, &rootNode); }
+		void enumerateZones(void (*a_func)(const ProfileZone*)) { enumerateZones(a_func, &rootZone); }
+		template <class T> void enumerateZones(T* a_this, void (T::*a_func)(const ProfileZone*)) { enumerateZones(a_this, a_func, &rootZone); }
+
+		static void enumerateNodes(void (*a_func)(const ProfileNode*), const ProfileNode* a_node) {
 			a_func(a_node);
 
 			if (a_node->firstChild) enumerateNodes(a_func, a_node->firstChild);
@@ -212,27 +221,21 @@ namespace Shiny {
 		}
 
 		template <class T>
-		static void enumerateNodes(T* a_this, void (T::*a_func)(const ProfileNode*),
-			const ProfileNode* a_node = &instance.rootNode)
-		{
+		static void enumerateNodes(T* a_this, void (T::*a_func)(const ProfileNode*), const ProfileNode* a_node) {
 			(a_this->*a_func)(a_node);
 
 			if (a_node->firstChild) enumerateNodes(a_this, a_func, a_node->firstChild);
 			if (a_node->nextSibling) enumerateNodes(a_this, a_func, a_node->nextSibling);
 		}
 
-		static void enumerateZones(void (*a_func)(const ProfileZone*),
-			const ProfileZone* a_zone = &instance.rootZone)
-		{
+		static void enumerateZones(void (*a_func)(const ProfileZone*), const ProfileZone* a_zone) {
 			a_func(a_zone);
 
 			if (a_zone->next) enumerateZones(a_func, a_zone->next);
 		}
 
 		template <class T>
-		static void enumerateZones(T* a_this, void (T::*a_func)(const ProfileZone*),
-			const ProfileZone* a_zone = &instance.rootZone)
-		{
+		static void enumerateZones(T* a_this, void (T::*a_func)(const ProfileZone*), const ProfileZone* a_zone) {
 			(a_this->*a_func)(a_zone);
 
 			if (a_zone->next) enumerateZones(a_this, a_func, a_zone->next);

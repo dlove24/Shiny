@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -47,6 +47,7 @@ namespace Shiny {
 			float avg;
 
 			void computeAverage(float a_damping) { avg = a_damping * (avg - cur) + cur; }
+			void copyAverage(void) { avg = (float) cur; }
 			void clear(void) { cur = 0; avg = 0; }
 		};
 
@@ -63,6 +64,12 @@ namespace Shiny {
 			entryCount.computeAverage(a_damping);
 			selfTicks.computeAverage(a_damping);
 			childTicks.computeAverage(a_damping);
+		}
+
+		void copyAverage(void) {
+			entryCount.copyAverage();
+			selfTicks.copyAverage();
+			childTicks.copyAverage();
 		}
 
 		void clearAll(void) {

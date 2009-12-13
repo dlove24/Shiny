@@ -114,6 +114,10 @@
 			<File
 				RelativePath=".\ShinyTools.cpp">
 			</File>
+			<File
+				RelativePath=".\ShinyZone.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"

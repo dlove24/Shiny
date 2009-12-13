@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -44,7 +44,7 @@ namespace Shiny {
 		snprintf(dest, OUTPUT_WIDTH_SUM + TRAILING,
 			"%-*s %*s %*s %*s",
 			OUTPUT_WIDTH_NAME, a_title,
-			OUTPUT_WIDTH_HIT, "hits",
+			OUTPUT_WIDTH_CALL, "calls",
 			OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1, "self time",
 			OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1, "total time");
 	}
@@ -59,7 +59,7 @@ namespace Shiny {
 
 		snprintf(dest, OUTPUT_WIDTH_DATA + TRAILING,
 			" %*.1f %*.0f %-2s %*.0f%% %*.0f %-2s %*.0f%%",
-			OUTPUT_WIDTH_HIT, a_data.entryCount.avg,
+			OUTPUT_WIDTH_CALL, a_data.entryCount.avg,
 			OUTPUT_WIDTH_TIME, a_data.selfTicks.avg * selfUnit->invTickFreq, selfUnit->suffix,
 			OUTPUT_WIDTH_PERC, a_data.selfTicks.avg * a_topercent,
 			OUTPUT_WIDTH_TIME, totalTicksAvg * totalUnit->invTickFreq, totalUnit->suffix,

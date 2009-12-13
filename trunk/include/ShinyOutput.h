@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -36,12 +36,12 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 	enum OUTPUT_WIDTH {
-		OUTPUT_WIDTH_HIT = 6,
+		OUTPUT_WIDTH_CALL = 6,
 		OUTPUT_WIDTH_TIME = 6,
 		OUTPUT_WIDTH_PERC = 4,
 		OUTPUT_WIDTH_SUM = 79,
 
-		OUTPUT_WIDTH_DATA = 1+OUTPUT_WIDTH_HIT + 1 + 2*(OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1) + 1,
+		OUTPUT_WIDTH_DATA = 1+OUTPUT_WIDTH_CALL + 1 + 2*(OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1) + 1,
 		OUTPUT_WIDTH_NAME = OUTPUT_WIDTH_SUM - OUTPUT_WIDTH_DATA
 	};
 

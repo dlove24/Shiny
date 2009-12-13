@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -37,7 +37,6 @@ namespace Shiny {
 #if SHINY_PROFILER_HASENABLED == TRUE
 		/* enabled = */ false,
 #endif
-
 		/* _lastTick = */ 0,
 		/* _curNode = */ &instance.rootNode,
 		/* _tableMask = */ 0,
@@ -138,17 +137,16 @@ namespace Shiny {
 #endif
 
 		_appendTicksToCurNode();
+		rootZone.preUpdateChain();
 
-		if (!_firstUpdate) {
-			rootZone.preUpdateChain();
-			rootNode.updateTree(a_damping);
-			rootZone.updateChain(a_damping);
+		if (_firstUpdate || a_damping == 0) {
+			_firstUpdate = false;
+			rootNode.updateTree();
+			rootZone.updateChain();
 
 		} else {
-			_firstUpdate = false;
-			rootZone.preUpdateChain();
-			rootNode.updateTree(0);
-			rootZone.updateChain(0);
+			rootNode.updateTree(a_damping);
+			rootZone.updateChain(a_damping);
 		}
 	}
 
@@ -164,8 +162,8 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 	void ProfileManager::destroy(void) {
-		_resetZones();
 		_destroyNodes();
+		_resetZones();
 		_uninit();
 	}
 
@@ -194,8 +192,8 @@ namespace Shiny {
 				nIndex = (nIndex + nStep) & _tableMask;
 				pNode = _nodeTable[nIndex];
 
-				if (!pNode) break;
-				else if (pNode->isEqual(_curNode, a_zone)) return pNode;
+				if (!pNode) break; // found empty slot
+				else if (pNode->isEqual(_curNode, a_zone)) return pNode; // found it!
 			}
 
 			// loop is guaranteed to end because the hash table is never full
@@ -229,7 +227,7 @@ namespace Shiny {
 			_resizeNodeTable(2 * _tableSize);
 			_resizeNodePool(nodeCount - 1);
 
-			// expansion has invalidated nIndex
+			// resize has invalidated nIndex
 			// we must compute nIndex again
 			return _createNode(a_cache, a_zone);
 		}
@@ -327,20 +325,7 @@ namespace Shiny {
 //-----------------------------------------------------------------------------
 
 	void ProfileManager::_resetZones(void) {
-		ProfileZone *pZone, *pNextZone;
-
-		pZone = &rootZone;
-
-		for(;;) {
-			pZone->uninit();
-
-			pNextZone = pZone->next;
-			pZone->next = NULL;
-			
-			if (!pNextZone) break;
-			pZone = pNextZone;
-		}
-
+		rootZone.resetChain();
 		_lastZone = &rootZone;
 		zoneCount = 1;
 	}
@@ -354,10 +339,10 @@ namespace Shiny {
 			_firstNodePool = NULL;
 		}
 
-		if (_nodeTable != instance._dummyNodeTable) {
+		if (_nodeTable != _dummyNodeTable) {
 			free(_nodeTable);
 
-			_nodeTable = instance._dummyNodeTable;
+			_nodeTable = _dummyNodeTable;
 			_tableSize = 1;
 			_tableMask = 0;
 		}

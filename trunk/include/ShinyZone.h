@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://shinyprofiler.sourceforge.net)
+Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -25,6 +25,7 @@ restrictions:
 #define SHINY_ZONE_H
 
 #include "ShinyData.h"
+#include <memory.h>
 
 #if SHINY_PROFILER == TRUE
 namespace Shiny {
@@ -57,28 +58,32 @@ namespace Shiny {
 
 		void init(ProfileZone* a_prev) {
 			_state = STATE_INITIALIZED;
-
 			a_prev->next = this;
 		}
 
 		void uninit(void) {
 			_state = STATE_HIDDEN;
+			next = NULL;
 		}
 
-		void preUpdateChain(void) {
-			data.clearCurrent();
-			if (next) next->preUpdateChain();
-		}
+		//TODO: se ProfileZone.cpp
 
-		void updateChain(float a_damping) {
-			data.computeAverage(a_damping);
-			if (next) next->updateChain(a_damping);
-		}
+		void preUpdateChain(void);
+		void updateChain(float a_damping);
+		void updateChain(void);
+
+		void resetChain(void);
+
+		ProfileZone* sortChain(void);
 
 		bool isUpdating(void) const { return _state == STATE_UPDATING; }
 
 		void enableUpdating(void) { _state = STATE_UPDATING; }
 		void disableUpdating(void) { _state = STATE_INITIALIZED; }
+		
+		float compare(ProfileZone *zone) { return zone->data.selfTicks.avg - data.selfTicks.avg; }
+
+		void clear(void);
 	};
 
 } // namespace Shiny
