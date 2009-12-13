@@ -67,7 +67,7 @@ void ShinyNode_updateTree(ShinyNode* first, float a_damping) {
 
 //-----------------------------------------------------------------------------
 
-void ShinyNode_updateTreeSimple(ShinyNode* first) {
+void ShinyNode_updateTreeClean(ShinyNode* first) {
 	ShinyNodeState *top = NULL;
 	ShinyNode *node = first;
 
@@ -78,7 +78,7 @@ void ShinyNode_updateTreeSimple(ShinyNode* first) {
 		} while (node);
 
 		for (;;) {
-			node = ShinyNodeState_finishAndGetNextSimple(top);
+			node = ShinyNodeState_finishAndGetNextClean(top);
 			top = ShinyNodeState_pop(top);
 
 			if (node) break;

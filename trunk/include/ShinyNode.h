@@ -85,7 +85,7 @@ SHINY_INLINE void ShinyNode_init(ShinyNode* self, ShinyNode* a_parent, struct _S
 }
 
 void ShinyNode_updateTree(ShinyNode* self, float a_damping);
-void ShinyNode_updateTreeSimple(ShinyNode* self);
+void ShinyNode_updateTreeClean(ShinyNode* self);
 
 SHINY_INLINE void ShinyNode_destroy(ShinyNode* self) {
 	*(self->_cache) = &_ShinyNode_dummy;

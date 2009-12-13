@@ -61,7 +61,7 @@ SHINY_INLINE void ShinyZone_uninit(ShinyZone *self) {
 
 void ShinyZone_preUpdateChain(ShinyZone *first);
 void ShinyZone_updateChain(ShinyZone *first, float a_damping);
-void ShinyZone_updateChainSimple(ShinyZone *first);
+void ShinyZone_updateChainClean(ShinyZone *first);
 
 void ShinyZone_resetChain(ShinyZone *first);
 

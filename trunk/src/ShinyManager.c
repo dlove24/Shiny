@@ -131,8 +131,8 @@ void ShinyManager_update(ShinyManager *self) {
 
 	if (self->_firstUpdate || self->damping == 0) {
 		self->_firstUpdate = FALSE;
-		ShinyNode_updateTreeSimple(&self->rootNode);
-		ShinyZone_updateChainSimple(&self->rootZone);
+		ShinyNode_updateTreeClean(&self->rootNode);
+		ShinyZone_updateChainClean(&self->rootZone);
 
 	} else {
 		ShinyNode_updateTree(&self->rootNode, self->damping);

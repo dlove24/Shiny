@@ -45,7 +45,7 @@ ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node);
 ShinyNodeState* ShinyNodeState_pop(ShinyNodeState *a_top);
 
 ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping);
-ShinyNode* ShinyNodeState_finishAndGetNextSimple(ShinyNodeState *self);
+ShinyNode* ShinyNodeState_finishAndGetNextClean(ShinyNodeState *self);
 
 #endif // if SHINY_COMPILED == TRUE
 

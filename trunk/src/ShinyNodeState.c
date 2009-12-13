@@ -48,7 +48,7 @@ ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node) {
 	a_node->_last.selfTicks = 0;
 	a_node->_last.entryCount = 0;
 
-	self->zoneUpdating = a_node->zone->_state != SHINY_ZONE_STATE_UPDATING;
+	self->zoneUpdating = zone->_state != SHINY_ZONE_STATE_UPDATING;
 	if (self->zoneUpdating) {
 		zone->_state = SHINY_ZONE_STATE_UPDATING;
 	} else {
@@ -73,14 +73,14 @@ ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping
 	ShinyZone *zone = node->zone;
 
 	if (self->zoneUpdating) {					
-		zone->data.childTicks.cur += zone->data.childTicks.cur;
+		zone->data.childTicks.cur += node->data.childTicks.cur;
 		zone->_state = SHINY_ZONE_STATE_INITIALIZED;
 	}
 
-	ShinyData_computeAverage(&(zone->data), a_damping);
+	ShinyData_computeAverage(&node->data, a_damping);
 
 	if (!ShinyNode_isRoot(node))
-		node->parent->data.childTicks.cur += zone->data.selfTicks.cur + zone->data.childTicks.cur;
+		node->parent->data.childTicks.cur += node->data.selfTicks.cur + node->data.childTicks.cur;
 
 	return node->nextSibling;
 }
@@ -88,19 +88,19 @@ ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping
 
 //-----------------------------------------------------------------------------
 
-ShinyNode* ShinyNodeState_finishAndGetNextSimple(ShinyNodeState *self) {
+ShinyNode* ShinyNodeState_finishAndGetNextClean(ShinyNodeState *self) {
 	ShinyNode *node = self->node;
 	ShinyZone *zone = node->zone;
 
 	if (self->zoneUpdating) {					
-		zone->data.childTicks.cur += zone->data.childTicks.cur;
+		zone->data.childTicks.cur += node->data.childTicks.cur;
 		zone->_state = SHINY_ZONE_STATE_INITIALIZED;
 	}
 
-	ShinyData_copyAverage(&(zone->data));
+	ShinyData_copyAverage(&node->data);
 
 	if (!ShinyNode_isRoot(node))
-		node->parent->data.childTicks.cur += zone->data.selfTicks.cur + zone->data.childTicks.cur;
+		node->parent->data.childTicks.cur += node->data.selfTicks.cur + node->data.childTicks.cur;
 
 	return node->nextSibling;
 }
