@@ -29,9 +29,6 @@ restrictions:
 #include <unistd.h>
 #endif
 
-#include <iostream>
-using namespace std;
-
 
 //-----------------------------------------------------------------------------
 
@@ -48,6 +45,8 @@ void millisleep(unsigned int milliseconds) {
 
 void Recursion(int calls_left) {
 	PROFILE_FUNC(); // begin profile until end of block
+
+	millisleep(20);
 
 	if (calls_left > 0) Recursion(calls_left - 1);
 }

@@ -43,19 +43,28 @@ void millisleep(unsigned int milliseconds) {
 
 //-----------------------------------------------------------------------------
 
-void LazyHelloWorld(void) {
-	PROFILE_FUNC(); // begin profile until end of block
+PROFILE_SHARED_DEFINE(Physics);
 
-	millisleep(100);
+void DoPhysicsSimulation() {
+	PROFILE_SHARED_BLOCK(Physics);
 }
 
+void CheckPhysicsRaycast() {
+	PROFILE_SHARED_BEGIN(Physics);
+	PROFILE_END();
+}
 
 //-----------------------------------------------------------------------------
 
-void HelloWorld(void) {
-	PROFILE_BEGIN(Hello_world_This_is_Shiny);
+void UpdateAllCharacters() {
+	PROFILE_BEGIN(Gamelogic);
 
-	millisleep(100);
+	PROFILE_BEGIN(AI);
+	CheckPhysicsRaycast();
+	PROFILE_END();
+
+	PROFILE_BEGIN(Player);
+	PROFILE_END();
 
 	PROFILE_END();
 }
@@ -63,15 +72,28 @@ void HelloWorld(void) {
 
 //-----------------------------------------------------------------------------
 
+void DrawWorldObjects() {
+	for (int i = 0; i < 10; i++) {
+		PROFILE_BLOCK(Graphics);
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+
+
 int main() {
+	int loops = 100;
 
-	HelloWorld();
-
-	LazyHelloWorld();
+	while (loops--) {
+		UpdateAllCharacters();
+		DoPhysicsSimulation();
+		DrawWorldObjects();
+	}
 
 	PROFILE_UPDATE(); // update all profiles
 	PROFILE_OUTPUT(stdout); // print to cout
-	
+
 #ifdef _WIN32
 	system("pause");
 #endif

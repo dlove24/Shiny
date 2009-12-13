@@ -27,9 +27,14 @@ restrictions:
 
 //-----------------------------------------------------------------------------
 
+#define SHINY_VERSION		"Shiny Profiler 2.5"
+
+
+//-----------------------------------------------------------------------------
+
 // SHINY_COMPILED is the master on or off swith at compile time. Define it to TRUE or FALSE before including header Shiny.h or inside ShinyConfig.h. Default is TRUE.
 #ifndef SHINY_COMPILED
-#define SHINY_COMPILED				TRUE
+#define SHINY_COMPILED		TRUE
 #endif
 
 // if SHINY_LOOKUP_RATE is defined to TRUE then Shiny will record the success of its hash function. This is useful for debugging. Default is FALSE.
@@ -53,7 +58,7 @@ restrictions:
 
 // TODO:
 #ifndef SHINY_OUTPUT_MODE
-#define SHINY_OUTPUT_MODE			SHINY_OUTPUT_MODE_BOTH
+#define SHINY_OUTPUT_MODE	SHINY_OUTPUT_MODE_BOTH
 #endif
 
 

@@ -187,6 +187,29 @@ SHINY_INLINE void ShinyManager_sortZones(ShinyManager *self) {
 		self->rootZone.next = ShinyZone_sortChain(self->rootZone.next);
 }
 
+const char* ShinyManager_getOutputErrorString(ShinyManager *self);
+
+int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
+void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
+
+#if __cplusplus
+} // end of extern "C"
+
+std::string ShinyManager_outputNodesToString(ShinyManager *self) {
+	const char* error = ShinyManager_getOutputErrorString(self);
+	if (!error) return ShinyNodesToString(&self->rootNode, self->nodeCount);
+	else return error;
+}
+
+std::string ShinyManager_outputZonesToString(ShinyManager *self) {
+	const char* error = ShinyManager_getOutputErrorString(self);
+	if (!error) return ShinyZonesToString(&self->rootZone, self->zoneCount);
+	else return error;
+}
+
+extern "C" { // end of c++
+#endif
+
 //
 
 SHINY_INLINE void ShinyManager_enumerateNodes(ShinyManager *self, void (*a_func)(const ShinyNode*)) {
@@ -210,9 +233,6 @@ template <class T> void ShinyManager_enumerateZones(ShinyManager *self, T* a_thi
 
 extern "C" { // end of c++
 #endif
-
-int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
-void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 
 
 //-----------------------------------------------------------------------------

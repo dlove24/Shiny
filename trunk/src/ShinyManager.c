@@ -25,6 +25,7 @@ restrictions:
 
 #include <malloc.h>
 #include <memory.h>
+#include <string.h>
 #include <stdio.h>
 
 #if SHINY_COMPILED == TRUE
@@ -350,6 +351,15 @@ void ShinyManager_destroyNodes(ShinyManager *self) {
 
 //-----------------------------------------------------------------------------
 
+const char* ShinyManager_getOutputErrorString(ShinyManager *self) {
+	if (self->_firstUpdate) return "!!! Profile data not updated !!!";
+	else if (!self->_initialized) return "!!! No profile was collected !!!";
+	else return NULL;
+}
+
+
+//-----------------------------------------------------------------------------
+
 int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename) {
 	FILE *file = fopen(a_filename, "w");
 
@@ -363,14 +373,12 @@ int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename) {
 //-----------------------------------------------------------------------------
 
 void ShinyManager_outputToStream(ShinyManager *self, FILE *a_stream) {
-	if (self->_firstUpdate) {
-		fprintf(a_stream, "!!! Profile data not updated !!!");
-		return;
+	const char *error = ShinyManager_getOutputErrorString(self);
 
-	} else if (!self->_initialized) {
-		fprintf(a_stream, "!!! No profile was collected !!!");
+	if (error) {
+		fwrite(error, 1, strlen(error), a_stream);
+		fwrite("\n\n", 1, 2, a_stream);
 		return;
-
 	}
 
 #if SHINY_OUTPUT_MODE & SHINY_OUTPUT_MODE_FLAT
