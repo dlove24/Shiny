@@ -4,13 +4,13 @@
 # Or if your default g++ is GCC4
 # CC = g++ -fPIC -march=pentium4 -msse2 -mfpmath=sse -funroll-loops
 
-CC		= g++
+CC		= gcc
 CCFLAGS		= -g -O3 -Wall
 INCLUDE		= -Iinclude
 LIBS		= 
 
-SRC		= $(wildcard src/*.cpp)
-OBJ		= $(SRC:.cpp=.o)
+SRC		= $(wildcard src/*.c)
+OBJ		= $(SRC:.c=.o)
 OUT		= lib/libShiny.a
 
 #uncoment the second 'DEBUG' to enable debuging.

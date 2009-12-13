@@ -56,7 +56,7 @@ typedef struct _ShinyNode {
 
 //-----------------------------------------------------------------------------
 
-extern ShinyNode ShinyNode_dummy;
+extern ShinyNode _ShinyNode_dummy;
 
 
 //-----------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void ShinyNode_updateTree(ShinyNode* self, float a_damping);
 void ShinyNode_updateTreeSimple(ShinyNode* self);
 
 SHINY_INLINE void ShinyNode_destroy(ShinyNode* self) {
-	*(self->_cache) = &ShinyNode_dummy;
+	*(self->_cache) = &_ShinyNode_dummy;
 }
 
 SHINY_INLINE void ShinyNode_appendTicks(ShinyNode* self, tick_t a_elapsedTicks) {
@@ -104,7 +104,7 @@ SHINY_INLINE int ShinyNode_isRoot(ShinyNode* self) {
 }
 
 SHINY_INLINE int ShinyNode_isDummy(ShinyNode* self) {
-	return (self == &ShinyNode_dummy);
+	return (self == &_ShinyNode_dummy);
 }
 
 SHINY_INLINE int ShinyNode_isEqual(ShinyNode* self, const ShinyNode* a_parent, const struct _ShinyZone* a_zone) {
@@ -117,7 +117,10 @@ void ShinyNode_clear(ShinyNode* self);
 
 void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*));
 
+/*
 #if __cplusplus
+} // end of extern "C"
+
 template <class T>
 void ShinyNode_enumerateNodes(const ShinyNode* a_node, T* a_this, void (T::*a_func)(const ShinyNode*)) {
 	(a_this->*a_func)(a_node);
@@ -125,7 +128,10 @@ void ShinyNode_enumerateNodes(const ShinyNode* a_node, T* a_this, void (T::*a_fu
 	if (a_node->firstChild) ShinyNode_enumerateNodes(a_node->firstChild, a_this, a_func);
 	if (a_node->nextSibling) ShinyNode_enumerateNodes(a_node->nextSibling, a_this, a_func);
 }
+
+extern "C" { // end of c++
 #endif
+*/
 
 #endif // if SHINY_COMPILED == TRUE
 

@@ -73,14 +73,20 @@ SHINY_INLINE float ShinyZone_compare(ShinyZone *a, ShinyZone *b) {
 
 void ShinyZone_enumerateZones(const ShinyZone* a_zone, void (*a_func)(const ShinyZone*));
 
+/*
 #if __cplusplus
+} // end of extern "C"
+
 template <class T>
 void ShinyZone_enumerateZones(const ShinyZone* a_zone, T* a_this, void (T::*a_func)(const ShinyZone*)) {
 	(a_this->*a_func)(a_zone);
 
 	if (a_zone->next) ShinyZone_enumerateZones(a_zone->next, a_this, a_func);
 }
+
+extern "C" { // end of c++
 #endif
+*/
 
 #endif // if SHINY_COMPILED == TRUE
 

@@ -71,6 +71,8 @@ typedef struct {
 	ShinyNode rootNode;
 	ShinyZone rootZone;
 
+	float damping;
+
 	int _initialized;
 	int _firstUpdate;
 } ShinyManager;
@@ -78,7 +80,7 @@ typedef struct {
 
 //-----------------------------------------------------------------------------
 
-extern ShinyNode* ShinyManager_dummyNodeTable[];
+extern ShinyNode* _ShinyManager_dummyNodeTable[];
 
 extern ShinyManager Shiny_instance;
 
@@ -102,7 +104,7 @@ void _ShinyManager_createNodePool(ShinyManager *self, uint32_t a_count);
 void _ShinyManager_resizeNodePool(ShinyManager *self, uint32_t a_count);
 
 ShinyNode* _ShinyManager_createNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_pZone);
-void _ShinyManager_insertNode(ShinyNode* a_pNode);
+void _ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode);
 
 SHINY_INLINE void _ShinyManager_init(ShinyManager *self) {
 	self->_initialized = TRUE;
@@ -175,7 +177,7 @@ SHINY_INLINE void ShinyManager_endCurNode(ShinyManager *self) {
 void ShinyManager_preLoad(ShinyManager *self);
 
 void ShinyManager_updateClean(ShinyManager *self);
-void ShinyManager_update(ShinyManager *self, float a_damping);
+void ShinyManager_update(ShinyManager *self);
 
 void ShinyManager_clear(ShinyManager *self);
 void ShinyManager_destroy(ShinyManager *self);
@@ -196,6 +198,8 @@ SHINY_INLINE void ShinyManager_enumerateZones(ShinyManager *self, void (*a_func)
 }
 
 #if __cplusplus
+} // end of extern "C"
+
 template <class T> void ShinyManager_enumerateNodes(ShinyManager *self, T* a_this, void (T::*a_func)(const ShinyNode*)) {
 	ShinyNode_enumerateNodes(&self->rootNode, a_this, a_func);
 }
@@ -203,6 +207,8 @@ template <class T> void ShinyManager_enumerateNodes(ShinyManager *self, T* a_thi
 template <class T> void ShinyManager_enumerateZones(ShinyManager *self, T* a_this, void (T::*a_func)(const ShinyZone*)) {
 	ShinyZone_enumerateZones(&self->rootZone, a_this, a_func);
 }
+
+extern "C" { // end of c++
 #endif
 
 int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
@@ -212,6 +218,8 @@ void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 //-----------------------------------------------------------------------------
 
 #if __cplusplus
+} // end of extern "C"
+
 class ShinyEndNodeOnDestruction {
 public:
 
@@ -219,6 +227,8 @@ public:
 		ShinyManager_endCurNode(&Shiny_instance);
 	}
 };
+
+extern "C" { // end of c++
 #endif
 
 

@@ -36,14 +36,14 @@ restrictions:
 
 //-----------------------------------------------------------------------------
 
-static ShinyManager Shiny_instance = {
+ShinyManager Shiny_instance = {
 #if SHINY_HAS_ENABLED == TRUE
 	/* enabled = */ false,
 #endif
 	/* _lastTick = */ 0,
 	/* _curNode = */ &Shiny_instance.rootNode,
 	/* _tableMask = */ 0,
-	/* _nodeTable = */ ShinyManager_dummyNodeTable,
+	/* _nodeTable = */ _ShinyManager_dummyNodeTable,
 #if SHINY_LOOKUP_RATE == TRUE
 	/* _lookupCount = */ 0,
 	/* _lookupSuccessCount = */ 0,
@@ -72,11 +72,12 @@ static ShinyManager Shiny_instance = {
 		/* name = */ "<Unprofiled>",
 		/* data = */ { { 0, 0 }, { 0, 0 }, { 0, 0 } }
 	},
+	/* damping = */ 0.9f,
 	/* _initialized = */ FALSE,
 	/* _firstUpdate = */ TRUE
 };
 
-static ShinyNode* ShinyManager_dummyNodeTable[] = { NULL };
+ShinyNode* _ShinyManager_dummyNodeTable[] = { NULL };
 
 
 //-----------------------------------------------------------------------------
@@ -120,7 +121,7 @@ void ShinyManager_preLoad(ShinyManager *self) {
 
 //-----------------------------------------------------------------------------
 
-void ShinyManager_update(ShinyManager *self, float a_damping) {
+void ShinyManager_update(ShinyManager *self) {
 #if SHINY_HAS_ENABLED == TRUE
 	if (!enabled) return;
 #endif
@@ -128,14 +129,14 @@ void ShinyManager_update(ShinyManager *self, float a_damping) {
 	_ShinyManager_appendTicksToCurNode(self);
 	ShinyZone_preUpdateChain(&self->rootZone);
 
-	if (self->_firstUpdate || a_damping == 0) {
+	if (self->_firstUpdate || self->damping == 0) {
 		self->_firstUpdate = FALSE;
 		ShinyNode_updateTreeSimple(&self->rootNode);
 		ShinyZone_updateChainSimple(&self->rootZone);
 
 	} else {
-		ShinyNode_updateTree(&self->rootNode, a_damping);
-		ShinyZone_updateChain(&self->rootZone, a_damping);
+		ShinyNode_updateTree(&self->rootNode, self->damping);
+		ShinyZone_updateChain(&self->rootZone, self->damping);
 	}
 }
 
@@ -237,19 +238,7 @@ ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ProfileNodeCache* a_cach
 
 //-----------------------------------------------------------------------------
 
-ShinyNode* _ShinyManager_createNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_pZone) {
-	ShinyNode* pNewNode = ShinyNodePool_newItem(self->_lastNodePool);
-	ShinyNode_init(pNewNode, self->_curNode, a_pZone, a_cache);
-
-	self->nodeCount++;
-	_ShinyManager_insertNode(pNewNode);
-	return pNewNode;
-}
-
-
-//-----------------------------------------------------------------------------
-
-void ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode) {
+void _ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode) {
 	uint32_t nHash = hash_value(a_pNode->parent, a_pNode->zone);
 	uint32_t nIndex = nHash & self->_tableMask;
 
@@ -261,6 +250,18 @@ void ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode) {
 	}
 
 	self->_nodeTable[nIndex] = a_pNode;
+}
+
+
+//-----------------------------------------------------------------------------
+
+ShinyNode* _ShinyManager_createNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_pZone) {
+	ShinyNode* pNewNode = ShinyNodePool_newItem(self->_lastNodePool);
+	ShinyNode_init(pNewNode, self->_curNode, a_pZone, a_cache);
+
+	self->nodeCount++;
+	_ShinyManager_insertNode(self, pNewNode);
+	return pNewNode;
 }
 
 
@@ -308,7 +309,7 @@ void _ShinyManager_resizeNodeTable(ShinyManager *self, uint32_t a_nCount) {
 		ShinyNode *pIter = ShinyNodePool_firstItem(pPool);
 
 		while (pIter != pPool->_nextItem)
-			ShinyManager_insertNode(self, pIter++);
+			_ShinyManager_insertNode(self, pIter++);
 
 		pPool = pPool->nextPool;
 	}
@@ -332,10 +333,10 @@ void ShinyManager_destroyNodes(ShinyManager *self) {
 		self->_firstNodePool = NULL;
 	}
 
-	if (self->_nodeTable != ShinyManager_dummyNodeTable) {
+	if (self->_nodeTable != _ShinyManager_dummyNodeTable) {
 		free(self->_nodeTable);
 
-		self->_nodeTable = ShinyManager_dummyNodeTable;
+		self->_nodeTable = _ShinyManager_dummyNodeTable;
 		self->_tableSize = 1;
 		self->_tableMask = 0;
 	}

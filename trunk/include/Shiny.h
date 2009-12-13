@@ -26,8 +26,9 @@ restrictions:
 
 //-----------------------------------------------------------------------------
 
-#include "ShinyConfig.h"
+extern "C" {
 #include "ShinyMacros.h"
 #include "ShinyManager.h"
+}
 
 #endif // ifndef SHINY_*_H

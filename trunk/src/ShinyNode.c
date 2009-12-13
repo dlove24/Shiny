@@ -32,7 +32,7 @@ restrictions:
 
 //-----------------------------------------------------------------------------
 
-static ShinyNode ShinyNode_dummy = {
+ShinyNode _ShinyNode_dummy = {
 	/* _last = */ { 0, 0 },
 	/* zone = */ NULL,
 	/* parent = */ NULL,

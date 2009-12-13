@@ -32,40 +32,49 @@ restrictions:
 //-----------------------------------------------------------------------------
 // public preprocessors
 
-#define PROFILE_UPDATE_ALL													\
-	Shiny::ShinyManager::instance.update
+#define PROFILE_UPDATE()													\
+	ShinyManager_update(&Shiny_instance)
 
-#define PROFILE_OUTPUT_ALL													\
-	Shiny::ShinyManager::instance.output
+#define PROFILE_SET_DAMPING(floatbetween0and1)								\
+	Shiny_instance.damping = (floatbetween0and1);
 
-#define PROFILE_GET_TREE_OUTPUT()											\
-	Shiny::ShinyManager::instance.outputNodesAsString()
+#define PROFILE_GET_DAMPING()												\
+	(Shiny_instance.damping)
 
-#define PROFILE_GET_FLAT_OUTPUT()											\
-	Shiny::ShinyManager::instance.outputZonesAsString()
+#define PROFILE_OUTPUT_FILE(filename)										\
+	ShinyManager_outputToFile(&Shiny_instance, filename)
 
-#define PROFILE_DESTROY_ALL()												\
-	Shiny::ShinyManager::instance.destroy()
+#define PROFILE_OUTPUT(stream)												\
+	ShinyManager_outputToStream(&Shiny_instance, stream)
+
+#define PROFILE_GET_TREE_STRING()											\
+	ShinyManager_outputNodesToString(&Shiny_instance)
+
+#define PROFILE_GET_FLAT_STRING()											\
+	ShinyManager_outputZonesToString(&Shiny_instance)
+
+#define PROFILE_DESTROY()													\
+	ShinyManager_destroy(&Shiny_instance)
 
 #define PROFILE_CLEAR()														\
-	Shiny::ShinyManager::instance.clear()
+	ShinyManager_clear(&Shiny_instance)
 
 #define PROFILE_SORT_ZONES()												\
-	Shiny::ShinyManager::instance.sortZones()
+	ShinyManager_sortZones(&Shiny_instance)
 
 
 //-----------------------------------------------------------------------------
 // public preprocessor
 
 #define PROFILE_GET_ROOT_DATA()												\
-	Shiny::ShinyManager::instance.rootZone.data
+	Shiny_instance.rootZone.data
 
 
 //-----------------------------------------------------------------------------
 // public preprocessor
 
 #define PROFILE_END()														\
-	ShinyManager_endCurNode(Shiny_instance)
+	ShinyManager_endCurNode(&Shiny_instance)
 
 
 //-----------------------------------------------------------------------------
@@ -162,7 +171,7 @@ restrictions:
 
 #if SHINY_HAS_ENABLED == TRUE
 #define PROFILE_SET_ENABLED( boolean )										\
-	Shiny::ShinyManager::instance.enabled = boolean
+	Shiny_instance.enabled = boolean
 #endif
 
 
@@ -181,8 +190,8 @@ restrictions:
 
 #define _PROFILE_ZONE_DEFINE( id, string )									\
 																			\
-	Shiny::ShinyZone id = {												\
-		NULL, SHINY_ZONE_STATE_HIDDEN, string,						\
+	ShinyZone id = {														\
+		NULL, SHINY_ZONE_STATE_HIDDEN, string,								\
 		{ { 0, 0 }, { 0, 0 }, { 0, 0 } }									\
 	}
 
@@ -192,7 +201,7 @@ restrictions:
 
 #define _PROFILE_ZONE_DECLARE( prefix, id )									\
 																			\
-	prefix Shiny::ShinyZone id
+	prefix ShinyZone id
 
 
 //-----------------------------------------------------------------------------
@@ -200,7 +209,7 @@ restrictions:
 
 #define _PROFILE_BLOCK_DEFINE( id )											\
 																			\
-	Shiny::ShinyEndNodeOnDestruction SHINY_UNUSED id
+	ShinyEndNodeOnDestruction SHINY_UNUSED id
 
 
 //-----------------------------------------------------------------------------
@@ -208,30 +217,30 @@ restrictions:
 
 #define _PROFILE_ZONE_BEGIN( id )											\
 	{																		\
-		static Shiny::ProfileNodeCache cache =								\
-			&ShinyNode_dummy;												\
+		static ProfileNodeCache cache =										\
+			&_ShinyNode_dummy;												\
 																			\
-		ShinyManager_lookupAndBeginNode(Shiny_instance, &cache, &id);			\
+		ShinyManager_lookupAndBeginNode(&Shiny_instance, &cache, &id);		\
 	}
 
 //-----------------------------------------------------------------------------
 
 #else // #if SHINY_COMPILED == TRUE
 
-namespace Shiny {
-
-	SHINY_INLINE ShinyData GetEmptyData() {
-		ShinyData a = { { 0, 0 }, { 0, 0 }, { 0, 0 } };
-		return a;
-	}
+SHINY_INLINE ShinyData GetEmptyData() {
+	ShinyData a = { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+	return a;
 }
 
-#define PROFILE_UPDATE_ALL(...)
-#define PROFILE_OUTPUT_ALL(...)
-#define PROFILE_CLEAR(...)
-#define PROFILE_GET_TREE_OUTPUT()		std::string()
-#define PROFILE_GET_FLAT_OUTPUT()		std::string()
-#define PROFILE_DESTROY_ALL	()
+#define PROFILE_UPDATE()
+#define PROFILE_SET_DAMPING(x)
+#define PROFILE_GET_DAMPING()			0.0f
+#define PROFILE_OUTPUT_FILE(x)
+#define PROFILE_OUTPUT(x)
+#define PROFILE_CLEAR()
+#define PROFILE_GET_TREE_STRING()		std::string()
+#define PROFILE_GET_FLAT_STRING()		std::string()
+#define PROFILE_DESTROY()
 #define PROFILE_BEGIN(name)
 #define PROFILE_BLOCK(name)
 #define PROFILE_FUNC()
@@ -241,8 +250,8 @@ namespace Shiny {
 #define PROFILE_SHARED_DEFINE(name)
 #define PROFILE_SHARED_BEGIN(name)
 #define PROFILE_SHARED_BLOCK(name)
-#define PROFILE_GET_SHARED_DATA(name)	Shiny::GetEmptyData()
-#define PROFILE_GET_ROOT_DATA()			Shiny::GetEmptyData()
+#define PROFILE_GET_SHARED_DATA(name)	ShinyGetEmptyData()
+#define PROFILE_GET_ROOT_DATA()			ShinyGetEmptyData()
 
 #if SHINY_HAS_ENABLED == TRUE
 #define PROFILE_SET_ENABLED(boolean)

@@ -93,7 +93,7 @@ int ShinyPrintZonesSize(uint32_t a_count) {
 
 //-----------------------------------------------------------------------------
 
-void ShinyPrintNodesToString(char* output, const ShinyNode *a_root) {
+void ShinyPrintNodes(char* output, const ShinyNode *a_root) {
 	float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
 	const ShinyNode *node = a_root;
 	char *s = output;
@@ -123,7 +123,7 @@ void ShinyPrintNodesToString(char* output, const ShinyNode *a_root) {
 
 //-----------------------------------------------------------------------------
 
-void ShinyPrintZonesToString(char* output, const ShinyZone *a_root) {
+void ShinyPrintZones(char* output, const ShinyZone *a_root) {
 	float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
 	const ShinyZone *zone = a_root;
 	char *s = output;
