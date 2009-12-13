@@ -26,66 +26,68 @@ restrictions:
 
 #include "ShinyPrereqs.h"
 
-namespace Shiny {
-
-
 //-----------------------------------------------------------------------------
-	
-	struct ProfileLastData {
-		uint32_t entryCount;
-		tick_t selfTicks;
-	};
+
+typedef struct {
+	uint32_t entryCount;
+	tick_t selfTicks;
+} ShinyLastData;
 
 
 //-----------------------------------------------------------------------------
 
-	struct ProfileData {
+typedef struct {
+	tick_t cur;
+	float avg;
+} ShinyTickData;
 
-		template <typename T>
-		struct Data {
-			T cur;
-			float avg;
+typedef struct {
+	uint32_t cur;
+	float avg;
+} ShinyCountData;
 
-			void computeAverage(float a_damping) { avg = a_damping * (avg - cur) + cur; }
-			void copyAverage(void) { avg = (float) cur; }
-			void clear(void) { cur = 0; avg = 0; }
-		};
+typedef struct {
+	ShinyCountData entryCount;
+	ShinyTickData selfTicks;
+	ShinyTickData childTicks;
+} ShinyData;
 
+SHINY_INLINE tick_t ShinyData_totalTicksCur(const ShinyData *self) {
+	return self->selfTicks.cur + self->childTicks.cur;
+}
 
-		Data<uint32_t> entryCount;
-		Data<tick_t> selfTicks;
-		Data<tick_t> childTicks;
+SHINY_INLINE float ShinyData_totalTicksAvg(const ShinyData *self) {
+	return self->selfTicks.avg + self->childTicks.avg;
+}
 
+SHINY_INLINE void ShinyData_computeAverage(ShinyData *self, float a_damping) {
+	self->entryCount.avg = self->entryCount.cur +
+		a_damping * (self->entryCount.avg - self->entryCount.cur);
+	self->selfTicks.avg = self->selfTicks.cur +
+		a_damping * (self->selfTicks.avg - self->selfTicks.cur);
+	self->childTicks.avg = self->childTicks.cur +
+		a_damping * (self->childTicks.avg - self->childTicks.cur);
+}
 
-		tick_t totalTicksCur(void) const { return selfTicks.cur + childTicks.cur; }
-		float totalTicksAvg(void) const { return selfTicks.avg + childTicks.avg; }
+SHINY_INLINE void ShinyData_copyAverage(ShinyData *self) {
+	self->entryCount.avg = (float) self->entryCount.cur;
+	self->selfTicks.avg = (float) self->selfTicks.cur;
+	self->childTicks.avg = (float) self->childTicks.cur;
+}
 
-		void computeAverage(float a_damping) {
-			entryCount.computeAverage(a_damping);
-			selfTicks.computeAverage(a_damping);
-			childTicks.computeAverage(a_damping);
-		}
+SHINY_INLINE void ShinyData_clearAll(ShinyData *self) {
+	self->entryCount.cur = 0;
+	self->entryCount.avg = 0;
+	self->selfTicks.cur = 0;
+	self->selfTicks.avg = 0;
+	self->childTicks.cur = 0;
+	self->childTicks.avg = 0;
+}
 
-		void copyAverage(void) {
-			entryCount.copyAverage();
-			selfTicks.copyAverage();
-			childTicks.copyAverage();
-		}
-
-		void clearAll(void) {
-			entryCount.clear();
-			selfTicks.clear();
-			childTicks.clear();
-		}
-
-		void clearCurrent(void) {
-			entryCount.cur = 0;
-			selfTicks.cur = 0;
-			childTicks.cur = 0;
-		}
-	};
-
-
-} // namespace Shiny
+SHINY_INLINE void ShinyData_clearCurrent(ShinyData *self) {
+	self->entryCount.cur = 0;
+	self->selfTicks.cur = 0;
+	self->childTicks.cur = 0;
+}
 
 #endif // ifndef SHINY_*_H

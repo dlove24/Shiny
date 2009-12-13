@@ -21,7 +21,7 @@ restrictions:
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef SHINY_PROFILER // do not include this file
+#ifndef SHINY_COMPILED // do not include this file
 
 
 //-----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Shiny is a low overhead, well documented and lightning fast C++ profiler. Easy t
 \n
 \subsection sub-1 What is this document?
 
-\ref ShinyDoc.h is a complete description of all the Shiny macros. Macro is a preprocessor directive that provides a mechanism for token replacement in your source code. Shiny uses macros to simplify interface and remain powerful. If the preprocessor SHINY_PROFILER is FALSE macro is ignored unless specified otherwise.
+\ref ShinyDoc.h is a complete description of all the Shiny macros. Macro is a preprocessor directive that provides a mechanism for token replacement in your source code. Shiny uses macros to simplify interface and remain powerful. If the preprocessor SHINY_COMPILED is FALSE macro is ignored unless specified otherwise.
 
 \n
 \subsection sub2 Why did you create Shiny?
@@ -68,7 +68,7 @@ Where are some key features:
 \n
 \subsection sub5 How to switch Shiny on and off?
 
-Shiny is turned on or off at compile time. Define the pre-processor SHINY_PROFILER to TRUE or FALSE to enable or disable, before including header Shiny.h. Shiny can also be enabled or disabled in ShinyConfig.h. Default is on.
+Shiny is turned on or off at compile time. Define the pre-processor SHINY_COMPILED to TRUE or FALSE to enable or disable, before including header Shiny.h. Shiny can also be enabled or disabled in ShinyConfig.h. Default is on.
 
 \n
 \subsection sub6 Does Shiny support C language?

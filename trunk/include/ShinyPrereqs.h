@@ -31,17 +31,15 @@ restrictions:
 #include <stdint.h>
 #endif
 
-namespace Shiny {
-
 
 //-----------------------------------------------------------------------------
 
-#if SHINY_PROFILER == TRUE
-	struct ProfileNode;
-	struct ProfileZone;
+#if SHINY_COMPILED == TRUE
+	struct _ShinyNode;
+	struct _ShinyZone;
 
-	typedef ProfileNode* ProfileNodeCache;
-	typedef ProfileNode* ProfileNodeTable;
+	typedef struct _ShinyNode* ProfileNodeCache;
+	typedef struct _ShinyNode* ProfileNodeTable;
 #endif
 
 
@@ -49,7 +47,7 @@ namespace Shiny {
 
 
 #if SHINY_COMPILER == SHINY_COMPILER_MSVC
-#	define SHINY_INLINE		inline
+#	define SHINY_INLINE		__inline
 #	define SHINY_UNUSED
 
 #elif SHINY_COMPILER == SHINY_COMPILER_GNUC
@@ -78,7 +76,5 @@ namespace Shiny {
 #endif
 
 	typedef uint64_t			tick_t;
-
-} // namespace Shiny
 
 #endif // ifndef SHINY_*_H

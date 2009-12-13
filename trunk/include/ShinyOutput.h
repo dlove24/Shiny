@@ -27,31 +27,38 @@ restrictions:
 #include "ShinyNode.h"
 #include "ShinyZone.h"
 
+#if SHINY_COMPILED == TRUE
+
+
+//-----------------------------------------------------------------------------
+
+int ShinyPrintNodesSize(uint32_t a_count);
+int ShinyPrintZonesSize(uint32_t a_count);
+
+void ShinyPrintNodes(char* output, const ShinyNode *a_root);
+void ShinyPrintZones(char* output, const ShinyZone *a_root);
+
+
+//-----------------------------------------------------------------------------
+
+#if __cplusplus
 #include <string>
 
-#if SHINY_PROFILER == TRUE
-namespace Shiny {
+/*
+SHINY_INLINE std::string ShinyNodesToString(const ShinyNode *a_root, uint32_t a_count) {
+	std::string str(ShinyPrintNodesSize(a_count) - 1);
+	ShinyPrintNodes(&str[0], a_root);
+	return str;
+}
 
+SHINY_INLINE std::string ShinyZonesToString(const ShinyZone *a_root, uint32_t a_count) {
+	std::string str(ShinyPrintZonesSize(a_count) - 1);
+	ShinyPrintZones(&str[0], a_root);
+	return str;
+}
+*/
+#endif
 
-//-----------------------------------------------------------------------------
-
-	enum OUTPUT_WIDTH {
-		OUTPUT_WIDTH_CALL = 6,
-		OUTPUT_WIDTH_TIME = 6,
-		OUTPUT_WIDTH_PERC = 4,
-		OUTPUT_WIDTH_SUM = 79,
-
-		OUTPUT_WIDTH_DATA = 1+OUTPUT_WIDTH_CALL + 1 + 2*(OUTPUT_WIDTH_TIME+4+OUTPUT_WIDTH_PERC+1) + 1,
-		OUTPUT_WIDTH_NAME = OUTPUT_WIDTH_SUM - OUTPUT_WIDTH_DATA
-	};
-
-
-//-----------------------------------------------------------------------------
-
-	std::string OutputNodesAsString(const ProfileNode *a_root, uint32_t a_count);
-	std::string OutputZonesAsString(const ProfileZone *a_root, uint32_t a_count);
-
-} // namespace Shiny
-#endif // if SHINY_PROFILER == TRUE
+#endif // if SHINY_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

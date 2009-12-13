@@ -151,27 +151,31 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\ShinyManager.cpp"
+				RelativePath=".\ShinyManager.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ShinyNode.cpp"
+				RelativePath=".\ShinyNode.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ShinyNodePool.cpp"
+				RelativePath=".\ShinyNodePool.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ShinyOutput.cpp"
+				RelativePath=".\ShinyNodeState.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ShinyTools.cpp"
+				RelativePath=".\ShinyOutput.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ShinyZone.cpp"
+				RelativePath=".\ShinyTools.c"
+				>
+			</File>
+			<File
+				RelativePath=".\ShinyZone.c"
 				>
 			</File>
 		</Filter>
@@ -210,6 +214,10 @@
 			</File>
 			<File
 				RelativePath="..\include\ShinyNodePool.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ShinyNodeState.h"
 				>
 			</File>
 			<File

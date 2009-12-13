@@ -27,66 +27,61 @@ restrictions:
 #include "ShinyData.h"
 #include <memory.h>
 
-#if SHINY_PROFILER == TRUE
-namespace Shiny {
+#if SHINY_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 
-	struct ProfileZone {
+#define SHINY_ZONE_STATE_HIDDEN			0
+#define SHINY_ZONE_STATE_INITIALIZED	1
+#define SHINY_ZONE_STATE_UPDATING		2
 
-		enum STATE {
-			STATE_HIDDEN = 0,
-			STATE_INITIALIZED,
-			STATE_UPDATING
-		};
 
-		//NOTE: data-members are intentionally public because the
-		//		class needs to fulfil the definition of an aggregate
+//-----------------------------------------------------------------------------
 
-		ProfileZone* next;
+typedef struct _ShinyZone {
+	struct _ShinyZone* next;
+	int _state;
+	const char* name;
+	ShinyData data;
+} ShinyZone;
 
-		STATE _state;
 
-		mutable const char* name;
+//-----------------------------------------------------------------------------
 
-		ProfileData data;
+SHINY_INLINE void ShinyZone_init(ShinyZone *self, ShinyZone* a_prev) {
+	self->_state = SHINY_ZONE_STATE_INITIALIZED;
+	a_prev->next = self;
+}
 
-		//
+SHINY_INLINE void ShinyZone_uninit(ShinyZone *self) {
+	self->_state = SHINY_ZONE_STATE_HIDDEN;
+	self->next = NULL;
+}
 
-		bool isInited(void) const { return _state != 0; }
+void ShinyZone_preUpdateChain(ShinyZone *first);
+void ShinyZone_updateChain(ShinyZone *first, float a_damping);
+void ShinyZone_updateChainSimple(ShinyZone *first);
 
-		void init(ProfileZone* a_prev) {
-			_state = STATE_INITIALIZED;
-			a_prev->next = this;
-		}
+void ShinyZone_resetChain(ShinyZone *first);
 
-		void uninit(void) {
-			_state = STATE_HIDDEN;
-			next = NULL;
-		}
+ShinyZone* ShinyZone_sortChain(ShinyZone *first);
 
-		//TODO: se ProfileZone.cpp
+SHINY_INLINE float ShinyZone_compare(ShinyZone *a, ShinyZone *b) {
+	return b->data.selfTicks.avg - a->data.selfTicks.avg;
+}
 
-		void preUpdateChain(void);
-		void updateChain(float a_damping);
-		void updateChain(void);
+void ShinyZone_enumerateZones(const ShinyZone* a_zone, void (*a_func)(const ShinyZone*));
 
-		void resetChain(void);
+#if __cplusplus
+template <class T>
+void ShinyZone_enumerateZones(const ShinyZone* a_zone, T* a_this, void (T::*a_func)(const ShinyZone*)) {
+	(a_this->*a_func)(a_zone);
 
-		ProfileZone* sortChain(void);
+	if (a_zone->next) ShinyZone_enumerateZones(a_zone->next, a_this, a_func);
+}
+#endif
 
-		bool isUpdating(void) const { return _state == STATE_UPDATING; }
-
-		void enableUpdating(void) { _state = STATE_UPDATING; }
-		void disableUpdating(void) { _state = STATE_INITIALIZED; }
-		
-		float compare(ProfileZone *zone) { return zone->data.selfTicks.avg - data.selfTicks.avg; }
-
-		void clear(void);
-	};
-
-} // namespace Shiny
-#endif // if SHINY_PROFILER == TRUE
+#endif // if SHINY_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

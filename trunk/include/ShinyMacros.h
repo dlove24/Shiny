@@ -26,46 +26,46 @@ restrictions:
 
 #include "ShinyManager.h"
 
-#if SHINY_PROFILER == TRUE
+#if SHINY_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 // public preprocessors
 
 #define PROFILE_UPDATE_ALL													\
-	Shiny::ProfileManager::instance.update
+	Shiny::ShinyManager::instance.update
 
 #define PROFILE_OUTPUT_ALL													\
-	Shiny::ProfileManager::instance.output
+	Shiny::ShinyManager::instance.output
 
 #define PROFILE_GET_TREE_OUTPUT()											\
-	Shiny::ProfileManager::instance.outputNodesAsString()
+	Shiny::ShinyManager::instance.outputNodesAsString()
 
 #define PROFILE_GET_FLAT_OUTPUT()											\
-	Shiny::ProfileManager::instance.outputZonesAsString()
+	Shiny::ShinyManager::instance.outputZonesAsString()
 
 #define PROFILE_DESTROY_ALL()												\
-	Shiny::ProfileManager::instance.destroy()
+	Shiny::ShinyManager::instance.destroy()
 
 #define PROFILE_CLEAR()														\
-	Shiny::ProfileManager::instance.clear()
+	Shiny::ShinyManager::instance.clear()
 
 #define PROFILE_SORT_ZONES()												\
-	Shiny::ProfileManager::instance.sortZones()
+	Shiny::ShinyManager::instance.sortZones()
 
 
 //-----------------------------------------------------------------------------
 // public preprocessor
 
 #define PROFILE_GET_ROOT_DATA()												\
-	Shiny::ProfileManager::instance.rootZone.data
+	Shiny::ShinyManager::instance.rootZone.data
 
 
 //-----------------------------------------------------------------------------
 // public preprocessor
 
 #define PROFILE_END()														\
-	Shiny::ProfileManager::instance._endCurNode()
+	ShinyManager_endCurNode(Shiny_instance)
 
 
 //-----------------------------------------------------------------------------
@@ -160,9 +160,9 @@ restrictions:
 //-----------------------------------------------------------------------------
 // public preprocessor
 
-#if SHINY_PROFILER_HASENABLED == TRUE
+#if SHINY_HAS_ENABLED == TRUE
 #define PROFILE_SET_ENABLED( boolean )										\
-	Shiny::ProfileManager::instance.enabled = boolean
+	Shiny::ShinyManager::instance.enabled = boolean
 #endif
 
 
@@ -181,8 +181,8 @@ restrictions:
 
 #define _PROFILE_ZONE_DEFINE( id, string )									\
 																			\
-	Shiny::ProfileZone id = {												\
-		NULL, Shiny::ProfileZone::STATE_HIDDEN, string,						\
+	Shiny::ShinyZone id = {												\
+		NULL, SHINY_ZONE_STATE_HIDDEN, string,						\
 		{ { 0, 0 }, { 0, 0 }, { 0, 0 } }									\
 	}
 
@@ -192,7 +192,7 @@ restrictions:
 
 #define _PROFILE_ZONE_DECLARE( prefix, id )									\
 																			\
-	prefix Shiny::ProfileZone id
+	prefix Shiny::ShinyZone id
 
 
 //-----------------------------------------------------------------------------
@@ -200,7 +200,7 @@ restrictions:
 
 #define _PROFILE_BLOCK_DEFINE( id )											\
 																			\
-	Shiny::ProfileAutoEndNode SHINY_UNUSED id
+	Shiny::ShinyEndNodeOnDestruction SHINY_UNUSED id
 
 
 //-----------------------------------------------------------------------------
@@ -209,19 +209,19 @@ restrictions:
 #define _PROFILE_ZONE_BEGIN( id )											\
 	{																		\
 		static Shiny::ProfileNodeCache cache =								\
-			&Shiny::ProfileNode::_dummy;									\
+			&ShinyNode_dummy;												\
 																			\
-		Shiny::ProfileManager::instance._beginNode(&cache, &id);			\
+		ShinyManager_lookupAndBeginNode(Shiny_instance, &cache, &id);			\
 	}
 
 //-----------------------------------------------------------------------------
 
-#else // #if SHINY_PROFILER == TRUE
+#else // #if SHINY_COMPILED == TRUE
 
 namespace Shiny {
 
-	SHINY_INLINE ProfileData GetEmptyData() {
-		ProfileData a = { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+	SHINY_INLINE ShinyData GetEmptyData() {
+		ShinyData a = { { 0, 0 }, { 0, 0 }, { 0, 0 } };
 		return a;
 	}
 }
@@ -244,7 +244,7 @@ namespace Shiny {
 #define PROFILE_GET_SHARED_DATA(name)	Shiny::GetEmptyData()
 #define PROFILE_GET_ROOT_DATA()			Shiny::GetEmptyData()
 
-#if SHINY_PROFILER_HASENABLED == TRUE
+#if SHINY_HAS_ENABLED == TRUE
 #define PROFILE_SET_ENABLED(boolean)
 #endif
 

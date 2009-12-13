@@ -26,46 +26,23 @@ restrictions:
 
 #include "ShinyPrereqs.h"
 
+//-----------------------------------------------------------------------------
 
-namespace Shiny {
+typedef struct {
+	float tickFreq;
+	float invTickFreq;
+	const char* suffix;
+} ShinyTimeUnit;
 
 
 //-----------------------------------------------------------------------------
 
-	struct TimeUnit {
-		float tickFreq;
-		float invTickFreq;
-		const char* suffix;
-	};
+const ShinyTimeUnit* ShinyGetTimeUnit(float ticks);
 
-	const TimeUnit* GetTimeUnit(float ticks);
+void ShinyGetTicks(tick_t *p);
 
+tick_t ShinyGetTickFreq(void);
 
-//-----------------------------------------------------------------------------
-
-	void GetTicks(tick_t *p);
-
-	const tick_t& GetTickFreq(void);
-
-	float GetTickInvFreq(void);
-
-
-//-----------------------------------------------------------------------------
-
-#if SHINY_COMPILER == SHINY_COMPILER_MSVC
-#	pragma warning (push)
-#	pragma warning(disable: 4311)
-#endif
-
-	inline uint32_t ptr32(const void *a_Ptr) {
-		return reinterpret_cast<uint32_t>(a_Ptr);
-	}
-
-#if SHINY_COMPILER == SHINY_COMPILER_MSVC
-#	pragma warning (pop)
-#endif
-
-
-} // namespace Shiny
+float ShinyGetTickInvFreq(void);
 
 #endif // ifndef SHINY_*_H

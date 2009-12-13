@@ -26,35 +26,39 @@ restrictions:
 
 #include "ShinyNode.h"
 
-#if SHINY_PROFILER == TRUE
-namespace Shiny {
+#if SHINY_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 
-	struct ProfileNodePool {
+typedef struct _ShinyNodePool {
 
-		typedef ProfileNode T;
+	struct _ShinyNodePool* nextPool;
 
-		ProfileNodePool* nextPool;
+	ShinyNode *_nextItem;
+	ShinyNode *endOfItems;
 
-		T *_nextItem;
-		T *endOfItems;
+	ShinyNode _items[1];
 
-		T _items[1];
+} ShinyNodePool;
 
 
-		T* firstItem(void) { return &_items[0]; }
-		T* newItem(void) { return _nextItem++; }
-		const T* unusedItem(void) const { return _nextItem; }
+//-----------------------------------------------------------------------------
 
-		static ProfileNodePool* createNodePool(uint32_t a_items);
+SHINY_INLINE ShinyNode* ShinyNodePool_firstItem(ShinyNodePool *self) {
+	return &(self->_items[0]);
+}
 
-		uint32_t memoryUsageChain(void);
-		void destroy(void);
-	};
+SHINY_INLINE ShinyNode* ShinyNodePool_newItem(ShinyNodePool *self) {
+	return self->_nextItem++;
+}
 
-} // namespace Shiny
-#endif // if SHINY_PROFILER == TRUE
+ShinyNodePool* ShinyNodePool_create(uint32_t a_items);
+void ShinyNodePool_destroy(ShinyNodePool *self);
+
+uint32_t ShinyNodePool_memoryUsageChain(ShinyNodePool *first);
+
+
+#endif // if SHINY_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

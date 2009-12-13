@@ -30,231 +30,198 @@ restrictions:
 #include "ShinyTools.h"
 #include "ShinyOutput.h"
 
-#include <iostream>
+#include <stdio.h>
 
-
-#if SHINY_PROFILER == TRUE
-namespace Shiny {
+#if SHINY_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 
-	struct ProfileManager {
-		//NOTE: data-members are intentionally public because the
-		//		class needs to fulfil the definition of an aggregate
+typedef struct {
+	//NOTE: data-members are intentionally public because the
+	//		class needs to fulfil the definition of an aggregate
 
-		enum TABLE_SIZE {
-			TABLE_SIZE_INIT = 256
-		};
-
-#if SHINY_PROFILER_HASENABLED == TRUE
-		bool enabled;
+#if SHINY_HAS_ENABLED == TRUE
+	bool enabled;
 #endif
 
-		tick_t _lastTick;
+	tick_t _lastTick;
 
-		ProfileNode* _curNode;
+	ShinyNode* _curNode;
 
-		uint32_t _tableMask; // = _tableSize - 1
+	uint32_t _tableMask; // = _tableSize - 1
 
-		ProfileNodeTable* _nodeTable;
+	ProfileNodeTable* _nodeTable;
 
-#if SHINY_PROFILER_LOOKUPRATE == TRUE
-		uint64_t _lookupCount;
-		uint64_t _lookupSuccessCount;
+#if SHINY_LOOKUP_RATE == TRUE
+	uint64_t _lookupCount;
+	uint64_t _lookupSuccessCount;
 #endif
 
-		uint32_t _tableSize;
+	uint32_t _tableSize;
 
-		uint32_t nodeCount;
-		uint32_t zoneCount;
+	uint32_t nodeCount;
+	uint32_t zoneCount;
 
-		ProfileZone* _lastZone;
+	ShinyZone* _lastZone;
 
-		ProfileNodePool* _lastNodePool;
-		ProfileNodePool* _firstNodePool;
+	ShinyNodePool* _lastNodePool;
+	ShinyNodePool* _firstNodePool;
 
-		ProfileNode rootNode;
-		ProfileZone rootZone;
+	ShinyNode rootNode;
+	ShinyZone rootZone;
 
-		bool _initialized;
-		bool _firstUpdate;
+	int _initialized;
+	int _firstUpdate;
+} ShinyManager;
 
-		static ProfileNode* _dummyNodeTable[];
 
-		static ProfileManager instance;
+//-----------------------------------------------------------------------------
 
-		//
+extern ShinyNode* ShinyManager_dummyNodeTable[];
 
-		SHINY_INLINE void _appendTicksToCurNode(void) {
-			register tick_t curTick;
-			GetTicks(&curTick);
+extern ShinyManager Shiny_instance;
 
-			_curNode->appendTicks(curTick - _lastTick);
-			_lastTick = curTick;
-		}
 
-		ProfileNode* _lookupNode(ProfileNodeCache* a_cache, ProfileZone* a_zone);
+//-----------------------------------------------------------------------------
 
-		void _createNodeTable(uint32_t a_count);
-		void _resizeNodeTable(uint32_t a_count);
+SHINY_INLINE void _ShinyManager_appendTicksToCurNode(ShinyManager *self) {
+	tick_t curTick;
+	ShinyGetTicks(&curTick);
 
-		void _createNodePool(uint32_t a_count);
-		void _resizeNodePool(uint32_t a_count);
+	ShinyNode_appendTicks(self->_curNode, curTick - self->_lastTick);
+	self->_lastTick = curTick;
+}
 
-		ProfileNode* _createNode(ProfileNodeCache* a_cache, ProfileZone* a_pZone);
-		void _insertNode(ProfileNode* a_pNode);
+ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_zone);
 
-		void _init(void) {
-			_initialized = true;
+void _ShinyManager_createNodeTable(ShinyManager *self, uint32_t a_count);
+void _ShinyManager_resizeNodeTable(ShinyManager *self, uint32_t a_count);
 
-			rootNode._last.entryCount = 1;
-			rootNode._last.selfTicks = 0;
-			GetTicks(&_lastTick);
-		}
+void _ShinyManager_createNodePool(ShinyManager *self, uint32_t a_count);
+void _ShinyManager_resizeNodePool(ShinyManager *self, uint32_t a_count);
 
-		void _uninit(void) {
-			_initialized = false;
+ShinyNode* _ShinyManager_createNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_pZone);
+void _ShinyManager_insertNode(ShinyNode* a_pNode);
 
-			rootNode.clear();
-			rootNode.parent = &rootNode;
-			rootNode.zone = &rootZone;
-		}
+SHINY_INLINE void _ShinyManager_init(ShinyManager *self) {
+	self->_initialized = TRUE;
 
-#if SHINY_PROFILER_LOOKUPRATE == TRUE
-		SHINY_INLINE void _incLookup(void) { _lookupCount++; }
-		SHINY_INLINE void _incLookupSuccess(void) { _lookupSuccessCount++; }
-		SHINY_INLINE float getLookupRate(void) const { return ((float) _lookupSuccessCount) / ((float) _lookupCount); }
+	self->rootNode._last.entryCount = 1;
+	self->rootNode._last.selfTicks = 0;
+	ShinyGetTicks(&self->_lastTick);
+}
+
+SHINY_INLINE void _ShinyManager_uninit(ShinyManager *self) {
+	self->_initialized = FALSE;
+
+	ShinyNode_clear(&self->rootNode);
+	self->rootNode.parent = &self->rootNode;
+	self->rootNode.zone = &self->rootZone;
+}
+
+#if SHINY_LOOKUP_RATE == TRUE
+SHINY_INLINE void _ShinyManager_incLookup(ShinyManager *self) { self->_lookupCount++; }
+SHINY_INLINE void _ShinyManager_incLookupSuccess(ShinyManager *self) { self->_lookupSuccessCount++; }
+SHINY_INLINE float ShinyManager_getLookupRate(const ShinyManager *self) { return ((float) self->_lookupSuccessCount) / ((float) self->_lookupCount); }
 
 #else
-		SHINY_INLINE void _incLookup(void) {}
-		SHINY_INLINE void _incLookupSuccess(void) {}
-		SHINY_INLINE float getLookupRate(void) const { return -1; }
+SHINY_INLINE void _ShinyManager_incLookup(ShinyManager *self) {}
+SHINY_INLINE void _ShinyManager_incLookupSuccess(ShinyManager *self) {}
+SHINY_INLINE float ShinyManager_getLookupRate(const ShinyManager *self) { return -1; }
 #endif
 
-		void _resetZones(void);
-		void _destroyNodes(void);
+void ShinyManager_resetZones(ShinyManager *self);
+void ShinyManager_destroyNodes(ShinyManager *self);
 
-		SHINY_INLINE float tableUsage(void) const { return ((float) nodeCount) / ((float) _tableSize); }
+SHINY_INLINE float ShinyManager_tableUsage(const ShinyManager *self)  {
+	return ((float) self->nodeCount) / ((float) self->_tableSize);
+}
 
-		uint32_t staticMemInBytes(void) {
-			// ASSUME: zones and cache are used as intended; throught the macros
+SHINY_INLINE uint32_t ShinyManager_allocMemInBytes(const ShinyManager *self) {
+	return self->_tableSize * sizeof(ShinyNode*)
+		 + (self->_firstNodePool)? ShinyNodePool_memoryUsageChain(self->_firstNodePool) : 0;
+}
 
-			return sizeof(this) + sizeof(_dummyNodeTable[0]) + sizeof(ProfileNode::_dummy)
-				 + (zoneCount - 1) * (sizeof(ProfileZone) + sizeof(ProfileNodeCache));
-		}
+SHINY_INLINE void ShinyManager_beginNode(ShinyManager *self, ShinyNode* a_node) {
+	ShinyNode_beginEntry(a_node);
 
-		uint32_t allocMemInBytes(void) {
-			return _tableSize * sizeof(ProfileNode*)
-				 + (_firstNodePool)? _firstNodePool->memoryUsageChain() : 0;
-		}
+	_ShinyManager_appendTicksToCurNode(self);
+	self->_curNode = a_node;
+}
 
-		SHINY_INLINE void _beginNode(ProfileNodeCache* a_cache, ProfileZone* a_zone) {
-#if SHINY_PROFILER_HASENABLED == TRUE
-			if (!enabled) return;
+SHINY_INLINE void ShinyManager_lookupAndBeginNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_zone) {
+#if SHINY_HAS_ENABLED == TRUE
+	if (!self->enabled) return;
 #endif
 
-			if (_curNode != (*a_cache)->parent)
-				*a_cache = _lookupNode(a_cache, a_zone);
+	if (self->_curNode != (*a_cache)->parent)
+		*a_cache = _ShinyManager_lookupNode(self, a_cache, a_zone);
 
-			_beginNode(*a_cache);
-		}
+	ShinyManager_beginNode(self, *a_cache);
+}
 
-		SHINY_INLINE void _beginNode(ProfileNode* a_node) {
-#if SHINY_PROFILER_HASENABLED == TRUE
-			if (!enabled) return;
+SHINY_INLINE void ShinyManager_endCurNode(ShinyManager *self) {
+#if SHINY_HAS_ENABLED == TRUE
+	if (!enabled) return;
 #endif
 
-			a_node->beginEntry();
+	_ShinyManager_appendTicksToCurNode(self);
+	self->_curNode = self->_curNode->parent;
+}
 
-			_appendTicksToCurNode();
-			_curNode = a_node;
-		}
+//
 
-		SHINY_INLINE void _endCurNode(void) {
-#if SHINY_PROFILER_HASENABLED == TRUE
-			if (!enabled) return;
+void ShinyManager_preLoad(ShinyManager *self);
+
+void ShinyManager_updateClean(ShinyManager *self);
+void ShinyManager_update(ShinyManager *self, float a_damping);
+
+void ShinyManager_clear(ShinyManager *self);
+void ShinyManager_destroy(ShinyManager *self);
+
+SHINY_INLINE void ShinyManager_sortZones(ShinyManager *self) {
+	if (self->rootZone.next)
+		self->rootZone.next = ShinyZone_sortChain(self->rootZone.next);
+}
+
+//
+
+SHINY_INLINE void ShinyManager_enumerateNodes(ShinyManager *self, void (*a_func)(const ShinyNode*)) {
+	ShinyNode_enumerateNodes(&self->rootNode, a_func);
+}
+
+SHINY_INLINE void ShinyManager_enumerateZones(ShinyManager *self, void (*a_func)(const ShinyZone*)) {
+	ShinyZone_enumerateZones(&self->rootZone, a_func);
+}
+
+#if __cplusplus
+template <class T> void ShinyManager_enumerateNodes(ShinyManager *self, T* a_this, void (T::*a_func)(const ShinyNode*)) {
+	ShinyNode_enumerateNodes(&self->rootNode, a_this, a_func);
+}
+
+template <class T> void ShinyManager_enumerateZones(ShinyManager *self, T* a_this, void (T::*a_func)(const ShinyZone*)) {
+	ShinyZone_enumerateZones(&self->rootZone, a_this, a_func);
+}
 #endif
 
-			_appendTicksToCurNode();
-			_curNode = _curNode->parent;
-		}
-
-		//
-
-		void preLoad(void);
-
-		void updateClean(void);
-		void update(float a_damping = 0.9f);
-
-		void clear(void);
-		void destroy(void);
-
-		bool output(const char *a_filename);
-		bool output(std::ostream &a_ostream = std::cout);
-
-		SHINY_INLINE std::string outputNodesAsString(void) {
-			return OutputNodesAsString(&rootNode, nodeCount);
-		}
-
-		SHINY_INLINE std::string outputZonesAsString(void) {
-			return OutputZonesAsString(&rootZone, zoneCount);
-		}
-
-		void sortZones(void) {
-			if (rootZone.next)
-				rootZone.next = rootZone.next->sortChain();
-		}
-
-		//
-
-		void enumerateNodes(void (*a_func)(const ProfileNode*)) { enumerateNodes(a_func, &rootNode); }
-		template <class T> void enumerateNodes(T* a_this, void (T::*a_func)(const ProfileNode*)) { enumerateNodes(a_this, a_func, &rootNode); }
-		void enumerateZones(void (*a_func)(const ProfileZone*)) { enumerateZones(a_func, &rootZone); }
-		template <class T> void enumerateZones(T* a_this, void (T::*a_func)(const ProfileZone*)) { enumerateZones(a_this, a_func, &rootZone); }
-
-		static void enumerateNodes(void (*a_func)(const ProfileNode*), const ProfileNode* a_node) {
-			a_func(a_node);
-
-			if (a_node->firstChild) enumerateNodes(a_func, a_node->firstChild);
-			if (a_node->nextSibling) enumerateNodes(a_func, a_node->nextSibling);
-		}
-
-		template <class T>
-		static void enumerateNodes(T* a_this, void (T::*a_func)(const ProfileNode*), const ProfileNode* a_node) {
-			(a_this->*a_func)(a_node);
-
-			if (a_node->firstChild) enumerateNodes(a_this, a_func, a_node->firstChild);
-			if (a_node->nextSibling) enumerateNodes(a_this, a_func, a_node->nextSibling);
-		}
-
-		static void enumerateZones(void (*a_func)(const ProfileZone*), const ProfileZone* a_zone) {
-			a_func(a_zone);
-
-			if (a_zone->next) enumerateZones(a_func, a_zone->next);
-		}
-
-		template <class T>
-		static void enumerateZones(T* a_this, void (T::*a_func)(const ProfileZone*), const ProfileZone* a_zone) {
-			(a_this->*a_func)(a_zone);
-
-			if (a_zone->next) enumerateZones(a_this, a_func, a_zone->next);
-		}
-	};
+int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
+void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 
 
 //-----------------------------------------------------------------------------
 
-	class ProfileAutoEndNode {
-	public:
+#if __cplusplus
+class ShinyEndNodeOnDestruction {
+public:
 
-		SHINY_INLINE ~ProfileAutoEndNode() {
-			ProfileManager::instance._endCurNode();
-		}
-	};
+	SHINY_INLINE ~ShinyEndNodeOnDestruction() {
+		ShinyManager_endCurNode(&Shiny_instance);
+	}
+};
+#endif
 
-} // namespace Shiny
 
-#endif // if SHINY_PROFILER == TRUE
+#endif // if SHINY_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

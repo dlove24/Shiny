@@ -27,82 +27,106 @@ restrictions:
 #include "ShinyData.h"
 #include "ShinyTools.h"
 
-#if SHINY_PROFILER == TRUE
-namespace Shiny {
+#if SHINY_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 
-	struct ProfileNode {
+typedef struct _ShinyNode {
 
-		//NOTE: data-members are intentionally public because the
-		//		class needs to fulfil the definition of an aggregate
+	ShinyLastData _last;
+
+	struct _ShinyZone* zone;
+	struct _ShinyNode* parent;
+	struct _ShinyNode* nextSibling;
+
+	struct _ShinyNode* firstChild;
+	struct _ShinyNode* lastChild;
+
+	uint32_t childCount;
+	uint32_t entryLevel;
+
+	ProfileNodeCache* _cache;
+
+	ShinyData data;
+
+	//
+} ShinyNode;
 
 
-		ProfileLastData _last;
+//-----------------------------------------------------------------------------
 
-		ProfileZone* zone;
-		ProfileNode* parent;
-		ProfileNode* nextSibling;
+extern ShinyNode ShinyNode_dummy;
 
-		ProfileNode* firstChild;
-		ProfileNode* lastChild;
 
-		uint32_t childCount;
-		uint32_t entryLevel;
+//-----------------------------------------------------------------------------
 
-		ProfileNodeCache* _cache;
+SHINY_INLINE void ShinyNode_addChild(ShinyNode* self,  ShinyNode* a_child) {
+	if (self->childCount++) {
+		self->lastChild->nextSibling = a_child;
+		self->lastChild = a_child;
 
-		ProfileData data;
+	} else {
+		self->lastChild = a_child;
+		self->firstChild = a_child;
+	}
+}
 
-		static ProfileNode _dummy;
+SHINY_INLINE void ShinyNode_init(ShinyNode* self, ShinyNode* a_parent, struct _ShinyZone* a_zone, ProfileNodeCache* a_cache) {
+	// NOTE: all member variables are assumed to be zero when allocated
 
-		//
+	self->zone = a_zone;
+	self->parent = a_parent;
 
-		void init(ProfileNode* a_parent, ProfileZone* a_zone, ProfileNodeCache* a_cache) {
-			// NOTE: all member variables are assumed to be zero when allocated
+	self->entryLevel = a_parent->entryLevel + 1;
+	ShinyNode_addChild(a_parent, self);
 
-			zone = a_zone;
-			parent = a_parent;
+	self->_cache = a_cache;
+}
 
-			entryLevel = a_parent->entryLevel + 1;
-			a_parent->addChild(this);
+void ShinyNode_updateTree(ShinyNode* self, float a_damping);
+void ShinyNode_updateTreeSimple(ShinyNode* self);
 
-			_cache = a_cache;
-		}
+SHINY_INLINE void ShinyNode_destroy(ShinyNode* self) {
+	*(self->_cache) = &ShinyNode_dummy;
+}
 
-		void addChild(ProfileNode* a_child) {
-			if (childCount++) {
-				lastChild->nextSibling = a_child;
-				lastChild = a_child;
+SHINY_INLINE void ShinyNode_appendTicks(ShinyNode* self, tick_t a_elapsedTicks) {
+	self->_last.selfTicks += a_elapsedTicks;
+}
 
-			} else {
-				lastChild = a_child;
-				firstChild = a_child;
-			}
-		}
+SHINY_INLINE void ShinyNode_beginEntry(ShinyNode* self) {
+	self->_last.entryCount++;
+}
 
-		void updateTree(float a_damping);
-		void updateTree(void);
+SHINY_INLINE int ShinyNode_isRoot(ShinyNode* self) {
+	return (self->entryLevel == 0);
+}
 
-		void destroy(void) { *_cache = &_dummy; }
+SHINY_INLINE int ShinyNode_isDummy(ShinyNode* self) {
+	return (self == &ShinyNode_dummy);
+}
 
-		SHINY_INLINE void appendTicks(tick_t a_elapsedTicks) { _last.selfTicks += a_elapsedTicks; }
-		SHINY_INLINE void beginEntry(void) { _last.entryCount++; }
+SHINY_INLINE int ShinyNode_isEqual(ShinyNode* self, const ShinyNode* a_parent, const struct _ShinyZone* a_zone) {
+	return (self->parent == a_parent && self->zone == a_zone);
+}
 
-		bool isRoot(void) const { return (entryLevel == 0); }
-		bool isDummy(void) const { return (this == &_dummy); }
+const ShinyNode* ShinyNode_findNextInTree(const ShinyNode* self);
 
-		bool isEqual(const ProfileNode* a_parent, const ProfileZone* a_zone) const {
-			return (parent == a_parent && zone == a_zone);
-		}
+void ShinyNode_clear(ShinyNode* self);
 
-		const ProfileNode* findNextInTree(void) const;
+void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*));
 
-		void clear(void);
-	};
+#if __cplusplus
+template <class T>
+void ShinyNode_enumerateNodes(const ShinyNode* a_node, T* a_this, void (T::*a_func)(const ShinyNode*)) {
+	(a_this->*a_func)(a_node);
 
-} // namespace Shiny
-#endif // if SHINY_PROFILER == TRUE
+	if (a_node->firstChild) ShinyNode_enumerateNodes(a_node->firstChild, a_this, a_func);
+	if (a_node->nextSibling) ShinyNode_enumerateNodes(a_node->nextSibling, a_this, a_func);
+}
+#endif
+
+#endif // if SHINY_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

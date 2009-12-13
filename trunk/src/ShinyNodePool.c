@@ -27,49 +27,51 @@ restrictions:
 #include <memory.h>
 #include <malloc.h>
 
-#if SHINY_PROFILER == TRUE
-namespace Shiny {
+#if SHINY_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 
-	ProfileNodePool* ProfileNodePool::createNodePool(uint32_t a_items) {
-		ProfileNodePool* pPool = static_cast<ProfileNodePool*>(
-			malloc(sizeof(ProfileNodePool) + sizeof(T) * (a_items - 1)));
+ShinyNodePool* ShinyNodePool_create(uint32_t a_items) {
+	ShinyNodePool* pPool = (ShinyNodePool*)
+		malloc(sizeof(ShinyNodePool) + sizeof(ShinyNode) * (a_items - 1));
 
-		pPool->nextPool = NULL;
-		pPool->_nextItem = &pPool->_items[0];
-		pPool->endOfItems = &pPool->_items[a_items];
+	pPool->nextPool = NULL;
+	pPool->_nextItem = &pPool->_items[0];
+	pPool->endOfItems = &pPool->_items[a_items];
 
-		memset(&pPool->_items[0], 0, a_items * sizeof(T));
-		return pPool;
-	}
-
-
-//-----------------------------------------------------------------------------
-
-	uint32_t ProfileNodePool::memoryUsageChain(void) {
-		uint32_t bytes = ptr32(
-			reinterpret_cast<void*>(
-				  reinterpret_cast<char*>(endOfItems)
-				- reinterpret_cast<char*>(this)));
-
-		if (nextPool) bytes += nextPool->memoryUsageChain();
-		return bytes;
-	}
+	memset(&pPool->_items[0], 0, a_items * sizeof(ShinyNode));
+	return pPool;
+}
 
 
 //-----------------------------------------------------------------------------
 
-	void ProfileNodePool::destroy(void) {
-		T* pItem = firstItem();
+uint32_t ShinyNodePool_memoryUsageChain(ShinyNodePool *first) {
+	uint32_t bytes = (uint32_t) ((char*) first->endOfItems - (char*) first);
+	ShinyNodePool *pool = first->nextPool;
 
-		while (pItem != unusedItem())
-			(pItem++)->destroy();
-
-		if (nextPool) nextPool->destroy();
-		free(this);
+	while (pool) {
+		bytes += (uint32_t) ((char*) pool->endOfItems - (char*) pool);
+		pool = pool->nextPool;
 	}
 
-} // namespace Shiny
+	return bytes;
+}
+
+
+//-----------------------------------------------------------------------------
+
+void ShinyNodePool_destroy(ShinyNodePool *self) {
+	ShinyNode* firstNode = ShinyNodePool_firstItem(self);
+	ShinyNode* lastNode = self->_nextItem;
+
+	while (firstNode != lastNode)
+		ShinyNode_destroy(firstNode++);
+
+	// TODO: make this into a loop or a tail recursion
+	if (self->nextPool) ShinyNodePool_destroy(self->nextPool);
+	free(self);
+}
+
 #endif
