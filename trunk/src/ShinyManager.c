@@ -386,7 +386,7 @@ void ShinyManager_outputToStream(ShinyManager *self, FILE *a_stream) {
 
 #if SHINY_OUTPUT_MODE & SHINY_OUTPUT_MODE_TREE
 	{
-		int size = ShinyPrintNodesSize(self->zoneCount);
+		int size = ShinyPrintNodesSize(self->nodeCount);
 		char *buffer = (char*) malloc(size);
 		ShinyPrintNodes(buffer, &self->rootNode);
 		fwrite(buffer, 1, size - 1, a_stream);

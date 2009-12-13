@@ -59,8 +59,11 @@ int main() {
 
 	Recursion(12);
 
-	PROFILER_UPDATE(); // update all profiles
-	PROFILER_OUTPUT(); // print to cout
+	PROFILE_UPDATE(); // update all profiles
+	PROFILE_OUTPUT(stdout); // print to cout
 
+#ifdef _WIN32
+	system("pause");
+#endif
 	return 0;
 }

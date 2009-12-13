@@ -44,7 +44,7 @@ ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node) {
 	zone->data.selfTicks.cur += a_node->_last.selfTicks;
 	zone->data.entryCount.cur += a_node->_last.entryCount;
 	
-	zone->data.childTicks.cur = 0;
+	a_node->data.childTicks.cur = 0;
 	a_node->_last.selfTicks = 0;
 	a_node->_last.entryCount = 0;
 
@@ -52,7 +52,7 @@ ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node) {
 	if (self->zoneUpdating) {
 		zone->_state = SHINY_ZONE_STATE_UPDATING;
 	} else {
-		zone->data.childTicks.cur -= zone->data.selfTicks.cur;
+		zone->data.childTicks.cur -= a_node->data.selfTicks.cur;
 	}
 
 	return self;

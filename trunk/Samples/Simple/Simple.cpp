@@ -62,7 +62,8 @@ int main() {
 	PROFILE_UPDATE(); // update all profiles
 	PROFILE_OUTPUT(stdout); // print to cout
 	
+#ifdef _WIN32
 	system("pause");
-
+#endif
 	return 0;
 }
