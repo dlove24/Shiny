@@ -70,7 +70,7 @@ ShinyManager Shiny_instance = {
 	/* rootZone = */ {
 		/* next = */ NULL,
 		/* _state = */ SHINY_ZONE_STATE_HIDDEN,
-		/* name = */ "<Unprofiled>",
+		/* name = */ "<unprofiled>",
 		/* data = */ { { 0, 0 }, { 0, 0 }, { 0, 0 } }
 	},
 	/* damping = */ 0.9f,

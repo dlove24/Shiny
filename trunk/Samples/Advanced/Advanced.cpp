@@ -24,57 +24,32 @@ restrictions:
 #include "Shiny.h"
 #include <stdlib.h>
 
-#ifdef _WIN32
-#include <windows.h> // Sleep
-#else // assume POSIX
-#include <unistd.h> // usleep
-#endif
+#include "Shared.h"
 
 
 //-----------------------------------------------------------------------------
 
-void millisleep(unsigned int milliseconds) {
-#ifdef _WIN32
-	Sleep(milliseconds);
-#else
-	usleep(milliseconds * 1000);
-#endif
+PROFILE_SHARED_DEFINE(Math);
+
+void DoSomeMath() {
+	PROFILE_SHARED_BLOCK(Math); // begin profile until end of block
 }
 
 
 //-----------------------------------------------------------------------------
 
-void LazyHelloWorld(void) {
+void Recursion(int calls_left) {
 	PROFILE_FUNC(); // begin profile until end of block
 
-	millisleep(100);
+	millisleep(20);
+
+	if (calls_left > 0) Recursion(calls_left - 1);
 }
 
 
 //-----------------------------------------------------------------------------
 
-void HelloWorld(void) {
-	PROFILE_BEGIN(Hello_world_This_is_Shiny);
+void ExecuteCommand(const char *command) {
 
-	millisleep(100);
-
-	PROFILE_END();
-}
-
-
-//-----------------------------------------------------------------------------
-
-int main() {
-
-	HelloWorld();
-
-	LazyHelloWorld();
-
-	PROFILE_UPDATE(); // update all profiles
-	PROFILE_OUTPUT(stdout); // print to cout
-	
-#ifdef _WIN32
-	system("pause");
-#endif
-	return 0;
+	PROFILE_CODE(system(command));
 }

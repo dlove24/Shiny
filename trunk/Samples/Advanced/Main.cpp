@@ -30,6 +30,8 @@ restrictions:
 #include <unistd.h> // usleep
 #endif
 
+#include "Shared.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -44,21 +46,8 @@ void millisleep(unsigned int milliseconds) {
 
 //-----------------------------------------------------------------------------
 
-void LazyHelloWorld(void) {
-	PROFILE_FUNC(); // begin profile until end of block
-
-	millisleep(100);
-}
-
-
-//-----------------------------------------------------------------------------
-
-void HelloWorld(void) {
-	PROFILE_BEGIN(Hello_world_This_is_Shiny);
-
-	millisleep(100);
-
-	PROFILE_END();
+void YetMoreMath() {
+	PROFILE_SHARED_BLOCK(Math); // begin profile until end of block
 }
 
 
@@ -66,13 +55,19 @@ void HelloWorld(void) {
 
 int main() {
 
-	HelloWorld();
+	DoSomeMath();
+	YetMoreMath();
+	Recursion(12);
 
-	LazyHelloWorld();
+#ifdef _WIN32
+	ExecuteCommand("cls");
+#else
+	ExecuteCommand("clear");
+#endif
 
 	PROFILE_UPDATE(); // update all profiles
 	PROFILE_OUTPUT(stdout); // print to cout
-	
+
 #ifdef _WIN32
 	system("pause");
 #endif

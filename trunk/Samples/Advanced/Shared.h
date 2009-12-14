@@ -23,46 +23,21 @@ restrictions:
 
 #include "Shiny.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#else // assume POSIX
-#include <unistd.h>
-#endif
+
+//-----------------------------------------------------------------------------
+
+PROFILE_SHARED_EXTERN(Math);
 
 
 //-----------------------------------------------------------------------------
 
-void millisleep(unsigned int milliseconds) {
-#ifdef _WIN32
-	Sleep(milliseconds);
-#else
-	usleep(milliseconds * 1000);
-#endif
-}
+void DoSomeMath();
+
+void Recursion(int calls_left);
+
+void ExecuteCommand(const char *command);
 
 
 //-----------------------------------------------------------------------------
 
-void Recursion(int calls_left) {
-	PROFILE_FUNC(); // begin profile until end of block
-
-	millisleep(20);
-
-	if (calls_left > 0) Recursion(calls_left - 1);
-}
-
-
-//-----------------------------------------------------------------------------
-
-int main() {
-
-	Recursion(12);
-
-	PROFILE_UPDATE(); // update all profiles
-	PROFILE_OUTPUT(stdout); // print to cout
-
-#ifdef _WIN32
-	system("pause");
-#endif
-	return 0;
-}
+void millisleep(unsigned int milliseconds);

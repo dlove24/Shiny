@@ -22,11 +22,12 @@ restrictions:
 */
 
 #include "Shiny.h"
+#include <stdlib.h>
 
 #ifdef _WIN32
-#include <windows.h>
+#include <windows.h> // Sleep
 #else // assume POSIX
-#include <unistd.h>
+#include <unistd.h> // usleep
 #endif
 
 

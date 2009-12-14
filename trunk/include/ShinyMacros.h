@@ -89,21 +89,23 @@ restrictions:
 //-----------------------------------------------------------------------------
 // public preprocessor
 
+#ifdef __cplusplus
 #define PROFILE_BLOCK( name )												\
 																			\
 	_PROFILE_BLOCK_DEFINE(_PROFILE_ID_BLOCK());								\
 	PROFILE_BEGIN(name)
-
+#endif
 
 //-----------------------------------------------------------------------------
 // public preprocessor
 
+#ifdef __cplusplus
 #define PROFILE_FUNC()														\
 																			\
 	_PROFILE_BLOCK_DEFINE(_PROFILE_ID_BLOCK());								\
 	static _PROFILE_ZONE_DEFINE(_PROFILE_ID_ZONE_FUNC(), __FUNCTION__);		\
 	_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_FUNC())
-
+#endif
 
 //-----------------------------------------------------------------------------
 // public preprocessor
@@ -144,11 +146,12 @@ restrictions:
 //-----------------------------------------------------------------------------
 // public preprocessor
 
+#ifdef __cplusplus
 #define PROFILE_SHARED_BLOCK( name )										\
 																			\
 	_PROFILE_BLOCK_DEFINE(_PROFILE_ID_BLOCK());								\
 	_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_SHARED(name))
-
+#endif
 
 //-----------------------------------------------------------------------------
 // public preprocessor
