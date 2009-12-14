@@ -14,6 +14,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_Recursion", "Samples\R
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_MainLoop", "Samples\MainLoop\Demo_MainLoop.vcproj", "{23595110-7DBF-45AE-95B6-A1A888AED9BF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D44CCFEB-7FC2-46E6-8290-E0B00D06A636} = {D44CCFEB-7FC2-46E6-8290-E0B00D06A636}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

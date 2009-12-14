@@ -85,7 +85,7 @@ ShinyNode* _ShinyManager_dummyNodeTable[] = { NULL };
 
 #if SHINY_COMPILER == SHINY_COMPILER_MSVC
 #	pragma warning (push)
-#	pragma warning(disable: 4311)
+#	pragma warning (disable: 4311)
 #endif
 
 // primary hash function
@@ -144,6 +144,22 @@ void ShinyManager_update(ShinyManager *self) {
 
 //-----------------------------------------------------------------------------
 
+void ShinyManager_updateClean(ShinyManager *self) {
+#if SHINY_HAS_ENABLED == TRUE
+	if (!enabled) return;
+#endif
+
+	_ShinyManager_appendTicksToCurNode(self);
+	ShinyZone_preUpdateChain(&self->rootZone);
+
+	self->_firstUpdate = FALSE;
+	ShinyNode_updateTreeClean(&self->rootNode);
+	ShinyZone_updateChainClean(&self->rootZone);
+}
+
+
+//-----------------------------------------------------------------------------
+
 void ShinyManager_clear(ShinyManager *self) {
 	ShinyManager_destroy(self);
 	ShinyManager_preLoad(self);
@@ -161,7 +177,7 @@ void ShinyManager_destroy(ShinyManager *self) {
 
 //-----------------------------------------------------------------------------
 
-ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_zone) {
+ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_zone) {
 	uint32_t nHash = hash_value(self->_curNode, a_zone);
 	uint32_t nIndex = nHash & self->_tableMask;
 	ShinyNode* pNode = self->_nodeTable[nIndex];
@@ -256,7 +272,7 @@ void _ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode) {
 
 //-----------------------------------------------------------------------------
 
-ShinyNode* _ShinyManager_createNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_pZone) {
+ShinyNode* _ShinyManager_createNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_pZone) {
 	ShinyNode* pNewNode = ShinyNodePool_newItem(self->_lastNodePool);
 	ShinyNode_init(pNewNode, self->_curNode, a_pZone, a_cache);
 
@@ -289,7 +305,7 @@ void _ShinyManager_createNodeTable(ShinyManager *self, uint32_t a_nCount) {
 	self->_tableSize = a_nCount;
 	self->_tableMask = a_nCount - 1;
 
-	self->_nodeTable = (ProfileNodeTable*)
+	self->_nodeTable = (ShinyNodeTable*)
 		malloc(sizeof(ShinyNode) * a_nCount);
 
 	memset(self->_nodeTable, 0, a_nCount * sizeof(ShinyNode*));
@@ -352,13 +368,18 @@ void ShinyManager_destroyNodes(ShinyManager *self) {
 //-----------------------------------------------------------------------------
 
 const char* ShinyManager_getOutputErrorString(ShinyManager *self) {
-	if (self->_firstUpdate) return "!!! Profile data not updated !!!";
-	else if (!self->_initialized) return "!!! No profile was collected !!!";
+	if (self->_firstUpdate) return "!!! Profile data must first be updated !!!";
+	else if (!self->_initialized) return "!!! No profiles where executed !!!";
 	else return NULL;
 }
 
 
 //-----------------------------------------------------------------------------
+
+#if SHINY_COMPILER == SHINY_COMPILER_MSVC
+#	pragma warning (push)
+#	pragma warning (disable: 4996)
+#endif
 
 int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename) {
 	FILE *file = fopen(a_filename, "w");
@@ -368,6 +389,10 @@ int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename) {
 	fclose(file);
 	return TRUE;
 }
+
+#if SHINY_COMPILER == SHINY_COMPILER_MSVC
+#	pragma warning (pop)
+#endif
 
 
 //-----------------------------------------------------------------------------

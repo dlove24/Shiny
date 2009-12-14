@@ -71,9 +71,10 @@ SHINY_INLINE float ShinyZone_compare(ShinyZone *a, ShinyZone *b) {
 	return b->data.selfTicks.avg - a->data.selfTicks.avg;
 }
 
+void ShinyZone_clear(ShinyZone* self);
+
 void ShinyZone_enumerateZones(const ShinyZone* a_zone, void (*a_func)(const ShinyZone*));
 
-/*
 #if __cplusplus
 } // end of extern "C"
 
@@ -86,7 +87,6 @@ void ShinyZone_enumerateZones(const ShinyZone* a_zone, T* a_this, void (T::*a_fu
 
 extern "C" { // end of c++
 #endif
-*/
 
 #endif // if SHINY_COMPILED == TRUE
 

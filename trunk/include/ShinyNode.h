@@ -46,7 +46,7 @@ typedef struct _ShinyNode {
 	uint32_t childCount;
 	uint32_t entryLevel;
 
-	ProfileNodeCache* _cache;
+	ShinyNodeCache* _cache;
 
 	ShinyData data;
 
@@ -72,7 +72,7 @@ SHINY_INLINE void ShinyNode_addChild(ShinyNode* self,  ShinyNode* a_child) {
 	}
 }
 
-SHINY_INLINE void ShinyNode_init(ShinyNode* self, ShinyNode* a_parent, struct _ShinyZone* a_zone, ProfileNodeCache* a_cache) {
+SHINY_INLINE void ShinyNode_init(ShinyNode* self, ShinyNode* a_parent, struct _ShinyZone* a_zone, ShinyNodeCache* a_cache) {
 	// NOTE: all member variables are assumed to be zero when allocated
 
 	self->zone = a_zone;

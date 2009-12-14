@@ -120,17 +120,9 @@ restrictions:
 //-----------------------------------------------------------------------------
 // public preprocessor
 
-#define PROFILE_SHARED_GLOBAL( name )										\
+#define PROFILE_SHARED_EXTERN( name )										\
 																			\
 	_PROFILE_ZONE_DECLARE(extern, _PROFILE_ID_ZONE_SHARED(name))
-
-
-//-----------------------------------------------------------------------------
-// public preprocessor
-
-#define PROFILE_SHARED_MEMBER( name )										\
-																			\
-	_PROFILE_ZONE_DECLARE(static, _PROFILE_ID_ZONE_SHARED(name))
 
 
 //-----------------------------------------------------------------------------
@@ -217,7 +209,7 @@ restrictions:
 
 #define _PROFILE_ZONE_BEGIN( id )											\
 	{																		\
-		static ProfileNodeCache cache =										\
+		static ShinyNodeCache cache =										\
 			&_ShinyNode_dummy;												\
 																			\
 		ShinyManager_lookupAndBeginNode(&Shiny_instance, &cache, &id);		\

@@ -51,7 +51,7 @@ typedef struct {
 
 	uint32_t _tableMask; // = _tableSize - 1
 
-	ProfileNodeTable* _nodeTable;
+	ShinyNodeTable* _nodeTable;
 
 #if SHINY_LOOKUP_RATE == TRUE
 	uint64_t _lookupCount;
@@ -95,7 +95,7 @@ SHINY_INLINE void _ShinyManager_appendTicksToCurNode(ShinyManager *self) {
 	self->_lastTick = curTick;
 }
 
-ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_zone);
+ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_zone);
 
 void _ShinyManager_createNodeTable(ShinyManager *self, uint32_t a_count);
 void _ShinyManager_resizeNodeTable(ShinyManager *self, uint32_t a_count);
@@ -103,7 +103,7 @@ void _ShinyManager_resizeNodeTable(ShinyManager *self, uint32_t a_count);
 void _ShinyManager_createNodePool(ShinyManager *self, uint32_t a_count);
 void _ShinyManager_resizeNodePool(ShinyManager *self, uint32_t a_count);
 
-ShinyNode* _ShinyManager_createNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_pZone);
+ShinyNode* _ShinyManager_createNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_pZone);
 void _ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode);
 
 SHINY_INLINE void _ShinyManager_init(ShinyManager *self) {
@@ -152,7 +152,7 @@ SHINY_INLINE void ShinyManager_beginNode(ShinyManager *self, ShinyNode* a_node) 
 	self->_curNode = a_node;
 }
 
-SHINY_INLINE void ShinyManager_lookupAndBeginNode(ShinyManager *self, ProfileNodeCache* a_cache, ShinyZone* a_zone) {
+SHINY_INLINE void ShinyManager_lookupAndBeginNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_zone) {
 #if SHINY_HAS_ENABLED == TRUE
 	if (!self->enabled) return;
 #endif
@@ -195,13 +195,13 @@ void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 #if __cplusplus
 } // end of extern "C"
 
-std::string ShinyManager_outputNodesToString(ShinyManager *self) {
+SHINY_INLINE std::string ShinyManager_outputNodesToString(ShinyManager *self) {
 	const char* error = ShinyManager_getOutputErrorString(self);
 	if (!error) return ShinyNodesToString(&self->rootNode, self->nodeCount);
 	else return error;
 }
 
-std::string ShinyManager_outputZonesToString(ShinyManager *self) {
+SHINY_INLINE std::string ShinyManager_outputZonesToString(ShinyManager *self) {
 	const char* error = ShinyManager_getOutputErrorString(self);
 	if (!error) return ShinyZonesToString(&self->rootZone, self->zoneCount);
 	else return error;

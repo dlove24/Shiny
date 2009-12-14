@@ -38,8 +38,8 @@ restrictions:
 	struct _ShinyNode;
 	struct _ShinyZone;
 
-	typedef struct _ShinyNode* ProfileNodeCache;
-	typedef struct _ShinyNode* ProfileNodeTable;
+	typedef struct _ShinyNode* ShinyNodeCache;
+	typedef struct _ShinyNode* ShinyNodeTable;
 #endif
 
 

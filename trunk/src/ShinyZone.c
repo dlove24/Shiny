@@ -23,6 +23,8 @@ restrictions:
 
 #include "ShinyZone.h"
 
+#include <memory.h>
+
 #if SHINY_COMPILED == TRUE
 
 //-----------------------------------------------------------------------------
@@ -159,6 +161,14 @@ ShinyZone* ShinyZone_sortChain(ShinyZone *first) {
 		insize *= 2;
 	}
 }
+
+
+//-----------------------------------------------------------------------------
+
+void ShinyZone_clear(ShinyZone* self) {
+	memset(self, 0, sizeof(ShinyZone));
+}
+
 
 //-----------------------------------------------------------------------------
 

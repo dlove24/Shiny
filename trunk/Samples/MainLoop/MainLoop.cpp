@@ -54,16 +54,26 @@ void CheckPhysicsRaycast() {
 	PROFILE_END();
 }
 
+
 //-----------------------------------------------------------------------------
 
+PROFILE_SHARED_DEFINE(Animations);
+
 void UpdateAllCharacters() {
+
 	PROFILE_BEGIN(Gamelogic);
 
 	PROFILE_BEGIN(AI);
 	CheckPhysicsRaycast();
+
+	PROFILE_SHARED_BEGIN(Animations);
+	PROFILE_END();
+
 	PROFILE_END();
 
 	PROFILE_BEGIN(Player);
+	PROFILE_SHARED_BEGIN(Animations);
+	PROFILE_END();
 	PROFILE_END();
 
 	PROFILE_END();
