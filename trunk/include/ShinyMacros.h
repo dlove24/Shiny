@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -26,7 +26,7 @@ restrictions:
 
 #include "ShinyManager.h"
 
-#if SHINY_COMPILED == TRUE
+#if SHINY_IS_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
@@ -111,12 +111,12 @@ restrictions:
 // public preprocessor
 
 #define PROFILE_CODE( code )												\
-	{																		\
+	do {																	\
 		static _PROFILE_ZONE_DEFINE(_PROFILE_ID_ZONE_CODE(), #code);		\
 		_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_CODE());						\
 		{ code; }															\
 		PROFILE_END();														\
-	}
+	} while(0)
 
 
 //-----------------------------------------------------------------------------
@@ -211,16 +211,16 @@ restrictions:
 // internal preprocessor
 
 #define _PROFILE_ZONE_BEGIN( id )											\
-	{																		\
+	do {																	\
 		static ShinyNodeCache cache =										\
 			&_ShinyNode_dummy;												\
 																			\
 		ShinyManager_lookupAndBeginNode(&Shiny_instance, &cache, &id);		\
-	}
+	} while(0)
 
 //-----------------------------------------------------------------------------
 
-#else // #if SHINY_COMPILED == TRUE
+#else // #if SHINY_IS_COMPILED == TRUE
 
 SHINY_INLINE ShinyData GetEmptyData() {
 	ShinyData a = { { 0, 0 }, { 0, 0 }, { 0, 0 } };

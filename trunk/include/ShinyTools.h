@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -39,9 +39,9 @@ typedef struct {
 
 const ShinyTimeUnit* ShinyGetTimeUnit(float ticks);
 
-void ShinyGetTicks(tick_t *p);
+void ShinyGetTicks(shinytick_t *p);
 
-tick_t ShinyGetTickFreq(void);
+shinytick_t ShinyGetTickFreq(void);
 
 float ShinyGetTickInvFreq(void);
 

@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -32,20 +32,17 @@ restrictions:
 
 #include <stdio.h>
 
-#if SHINY_COMPILED == TRUE
+#if SHINY_IS_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
 
 typedef struct {
-	//NOTE: data-members are intentionally public because the
-	//		class needs to fulfil the definition of an aggregate
-
 #if SHINY_HAS_ENABLED == TRUE
 	bool enabled;
 #endif
 
-	tick_t _lastTick;
+	shinytick_t _lastTick;
 
 	ShinyNode* _curNode;
 
@@ -88,7 +85,7 @@ extern ShinyManager Shiny_instance;
 //-----------------------------------------------------------------------------
 
 SHINY_INLINE void _ShinyManager_appendTicksToCurNode(ShinyManager *self) {
-	tick_t curTick;
+	shinytick_t curTick;
 	ShinyGetTicks(&curTick);
 
 	ShinyNode_appendTicks(self->_curNode, curTick - self->_lastTick);
@@ -252,6 +249,6 @@ extern "C" { // end of c++
 #endif
 
 
-#endif // if SHINY_COMPILED == TRUE
+#endif // if SHINY_IS_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

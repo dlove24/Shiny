@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://sourceforge.net/projects/shinyprofiler)
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -48,10 +48,15 @@ PROFILE_SHARED_DEFINE(Physics);
 
 void DoPhysicsSimulation() {
 	PROFILE_SHARED_BLOCK(Physics);
+
+	// do stuff
 }
 
 void CheckPhysicsRaycast() {
 	PROFILE_SHARED_BEGIN(Physics);
+
+	// do stuff
+
 	PROFILE_END();
 }
 
@@ -61,23 +66,25 @@ void CheckPhysicsRaycast() {
 PROFILE_SHARED_DEFINE(Animations);
 
 void UpdateAllCharacters() {
-
-	PROFILE_BEGIN(Gamelogic);
+	PROFILE_BLOCK(Gamelogic); // (only supported in c++)
 
 	PROFILE_BEGIN(AI);
-	CheckPhysicsRaycast();
+		CheckPhysicsRaycast();
 
-	PROFILE_SHARED_BEGIN(Animations);
-	PROFILE_END();
+		PROFILE_SHARED_BEGIN(Animations);
+		// do stuff
+		PROFILE_END();
 
 	PROFILE_END();
 
 	PROFILE_BEGIN(Player);
-	PROFILE_SHARED_BEGIN(Animations);
-	PROFILE_END();
+		// do stuff
+
+		PROFILE_SHARED_BEGIN(Animations);
+		// do stuff
+		PROFILE_END();
 	PROFILE_END();
 
-	PROFILE_END();
 }
 
 
@@ -85,7 +92,9 @@ void UpdateAllCharacters() {
 
 void DrawWorldObjects() {
 	for (int i = 0; i < 10; i++) {
-		PROFILE_BLOCK(Graphics);
+		PROFILE_BLOCK(Graphics); // (only supported in c++)
+
+		// do stuff
 	}
 }
 
@@ -100,10 +109,11 @@ int main() {
 		UpdateAllCharacters();
 		DoPhysicsSimulation();
 		DrawWorldObjects();
+
+		PROFILE_UPDATE(); // update all profiles
 	}
 
-	PROFILE_UPDATE(); // update all profiles
-	PROFILE_OUTPUT(stdout); // print to cout
+	PROFILE_OUTPUT(stdout); // print to terminal
 
 #ifdef _WIN32
 	system("pause");

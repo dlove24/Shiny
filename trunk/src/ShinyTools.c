@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -66,12 +66,12 @@ const ShinyTimeUnit* ShinyGetTimeUnit(float ticks) {
 
 #if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
 
-void ShinyGetTicks(tick_t *p) {
+void ShinyGetTicks(shinytick_t *p) {
 	QueryPerformanceCounter((LARGE_INTEGER*)(p));
 }
 
-tick_t ShinyGetTickFreq(void) {
-	static tick_t freq = 0;
+shinytick_t ShinyGetTickFreq(void) {
+	static shinytick_t freq = 0;
 	if (freq == 0) QueryPerformanceFrequency((LARGE_INTEGER*)(&freq));
 	return freq;
 }
@@ -87,14 +87,14 @@ float ShinyGetTickInvFreq(void) {
 
 #elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
 
-void ShinyGetTicks(tick_t *p) {
+void ShinyGetTicks(shinytick_t *p) {
 	timeval time;
 	gettimeofday(&time, NULL);
 
 	*p = time.tv_sec * 1000000 + time.tv_usec;
 }
 
-const tick_t& ShinyGetTickFreq(void) {
+const shinytick_t& ShinyGetTickFreq(void) {
 	return 1000000;
 }
 

@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -26,7 +26,7 @@ restrictions:
 
 #include "ShinyNode.h"
 
-#if SHINY_COMPILED == TRUE
+#if SHINY_IS_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
@@ -47,6 +47,6 @@ ShinyNodeState* ShinyNodeState_pop(ShinyNodeState *a_top);
 ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping);
 ShinyNode* ShinyNodeState_finishAndGetNextClean(ShinyNodeState *self);
 
-#endif // if SHINY_COMPILED == TRUE
+#endif // if SHINY_IS_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H

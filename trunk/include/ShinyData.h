@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -31,14 +31,14 @@ restrictions:
 
 typedef struct {
 	uint32_t entryCount;
-	tick_t selfTicks;
+	shinytick_t selfTicks;
 } ShinyLastData;
 
 
 //-----------------------------------------------------------------------------
 
 typedef struct {
-	tick_t cur;
+	shinytick_t cur;
 	float avg;
 } ShinyTickData;
 
@@ -53,7 +53,7 @@ typedef struct {
 	ShinyTickData childTicks;
 } ShinyData;
 
-SHINY_INLINE tick_t ShinyData_totalTicksCur(const ShinyData *self) {
+SHINY_INLINE shinytick_t ShinyData_totalTicksCur(const ShinyData *self) {
 	return self->selfTicks.cur + self->childTicks.cur;
 }
 

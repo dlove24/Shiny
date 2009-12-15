@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi (http://sourceforge.net/projects/shinyprofiler)
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -45,7 +45,7 @@ void millisleep(unsigned int milliseconds) {
 //-----------------------------------------------------------------------------
 
 void LazyHelloWorld(void) {
-	PROFILE_FUNC(); // begin profile until end of block
+	PROFILE_FUNC(); // profile until end of block (only supported in c++)
 
 	millisleep(100);
 }
@@ -54,7 +54,7 @@ void LazyHelloWorld(void) {
 //-----------------------------------------------------------------------------
 
 void HelloWorld(void) {
-	PROFILE_BEGIN(Hello_world_This_is_Shiny);
+	PROFILE_BEGIN(Hello_World__This_is_Shiny); // profile until PROFILE_END()
 
 	millisleep(100);
 
@@ -71,7 +71,7 @@ int main() {
 	LazyHelloWorld();
 
 	PROFILE_UPDATE(); // update all profiles
-	PROFILE_OUTPUT(stdout); // print to cout
+	PROFILE_OUTPUT(stdout); // print to terminal
 	
 #ifdef _WIN32
 	system("pause");

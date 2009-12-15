@@ -1,7 +1,7 @@
 /*
 The zlib/libpng License
 
-Copyright (c) 2007 Aidin Abedi, http://shinyprofiler.sourceforge.net
+Copyright (c) 2007-2009 Aidin Abedi, http://shinyprofiler.sourceforge.net
 
 This software is provided 'as-is', without any express or implied warranty. In no event will
 the authors be held liable for any damages arising from the use of this software.
@@ -27,7 +27,7 @@ restrictions:
 #include "ShinyData.h"
 #include "ShinyTools.h"
 
-#if SHINY_COMPILED == TRUE
+#if SHINY_IS_COMPILED == TRUE
 
 
 //-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ SHINY_INLINE void ShinyNode_destroy(ShinyNode* self) {
 	*(self->_cache) = &_ShinyNode_dummy;
 }
 
-SHINY_INLINE void ShinyNode_appendTicks(ShinyNode* self, tick_t a_elapsedTicks) {
+SHINY_INLINE void ShinyNode_appendTicks(ShinyNode* self, shinytick_t a_elapsedTicks) {
 	self->_last.selfTicks += a_elapsedTicks;
 }
 
@@ -117,7 +117,6 @@ void ShinyNode_clear(ShinyNode* self);
 
 void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*));
 
-/*
 #if __cplusplus
 } // end of extern "C"
 
@@ -131,8 +130,7 @@ void ShinyNode_enumerateNodes(const ShinyNode* a_node, T* a_this, void (T::*a_fu
 
 extern "C" { // end of c++
 #endif
-*/
 
-#endif // if SHINY_COMPILED == TRUE
+#endif // if SHINY_IS_COMPILED == TRUE
 
 #endif // ifndef SHINY_*_H
