@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shiny", "src\Shiny.vcproj", "{D44CCFEB-7FC2-46E6-8290-E0B00D06A636}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shiny", "Shiny\src\Shiny.vcproj", "{D44CCFEB-7FC2-46E6-8290-E0B00D06A636}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_Simple", "Samples\Simple\Demo_Simple.vcproj", "{CE0B3567-5D70-4AA4-8F7C-29FE8E9CA7A3}"
 	ProjectSection(ProjectDependencies) = postProject

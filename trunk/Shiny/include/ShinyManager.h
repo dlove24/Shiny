@@ -207,6 +207,16 @@ SHINY_INLINE std::string ShinyManager_outputZonesToString(ShinyManager *self) {
 extern "C" { // end of c++
 #endif
 
+SHINY_INLINE int ShinyManager_isSelfZoneGreaterEqual(ShinyManager *self, ShinyZone* a_zone, float a_percentage) {
+	return a_percentage * (float) self->rootZone.data.childTicks.cur
+		<= (float) a_zone->data.selfTicks.cur; 
+}
+
+SHINY_INLINE int ShinyManager_isTotalZoneGreaterEqual(ShinyManager *self, ShinyZone* a_zone, float a_percentage) {
+	return a_percentage * (float) self->rootZone.data.childTicks.cur
+		<= (float) ShinyData_totalTicksCur(&a_zone->data); 
+}
+
 //
 
 SHINY_INLINE void ShinyManager_enumerateNodes(ShinyManager *self, void (*a_func)(const ShinyNode*)) {

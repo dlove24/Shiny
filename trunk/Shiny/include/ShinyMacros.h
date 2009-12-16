@@ -35,23 +35,25 @@ restrictions:
 #define PROFILE_UPDATE()													\
 	ShinyManager_update(&Shiny_instance)
 
-#define PROFILE_SET_DAMPING(floatbetween0and1)								\
-	Shiny_instance.damping = (floatbetween0and1);
+#define PROFILE_SET_DAMPING(float0to1)										\
+	Shiny_instance.damping = (float0to1);
 
 #define PROFILE_GET_DAMPING()												\
 	(Shiny_instance.damping)
 
 #define PROFILE_OUTPUT_FILE(filename)										\
-	ShinyManager_outputToFile(&Shiny_instance, filename)
+	ShinyManager_outputToFile(&Shiny_instance, (filename))
 
 #define PROFILE_OUTPUT(stream)												\
-	ShinyManager_outputToStream(&Shiny_instance, stream)
+	ShinyManager_outputToStream(&Shiny_instance, (stream))
 
+#ifdef __cplusplus
 #define PROFILE_GET_TREE_STRING()											\
 	ShinyManager_outputNodesToString(&Shiny_instance)
 
 #define PROFILE_GET_FLAT_STRING()											\
 	ShinyManager_outputZonesToString(&Shiny_instance)
+#endif
 
 #define PROFILE_DESTROY()													\
 	ShinyManager_destroy(&Shiny_instance)
@@ -66,8 +68,47 @@ restrictions:
 //-----------------------------------------------------------------------------
 // public preprocessor
 
-#define PROFILE_GET_ROOT_DATA()												\
-	Shiny_instance.rootZone.data
+#define PROFILE_GET_TOTAL_TICKS_CUR()										\
+	ShinyData_totalTicksCur(&Shiny_instance.rootZone.data)
+
+#define PROFILE_GET_TOTAL_TICKS()											\
+	ShinyData_totalTicksAvg(&Shiny_instance.rootZone.data)
+
+#define PROFILE_GET_PROFILED_TICKS_CUR()									\
+	(Shiny_instance.rootZone.data.selfTicks.cur)
+
+#define PROFILE_GET_PROFILED_TICKS()										\
+	(Shiny_instance.rootZone.data.selfTicks.avg)
+
+#define PROFILE_GET_UNPROFILED_TICKS_CUR()									\
+	(Shiny_instance.rootZone.data.childTicks.cur)
+
+#define PROFILE_GET_UNPROFILED_TICKS()										\
+	(Shiny_instance.rootZone.data.childTicks.avg)
+
+#define PROFILE_GET_SHARED_TOTAL_TICKS_CUR(name)							\
+	ShinyData_totalTicksCur(&(_PROFILE_ID_ZONE_SHARED(name).data))
+
+#define PROFILE_GET_SHARED_TOTAL_TICKS(name)								\
+	ShinyData_totalTicksAvg(&(_PROFILE_ID_ZONE_SHARED(name).data))
+
+#define PROFILE_GET_SHARED_SELF_TICKS_CUR(name)								\
+	(_PROFILE_ID_ZONE_SHARED(name).data.selfTicks.cur)
+
+#define PROFILE_GET_SHARED_SELF_TICKS(name)									\
+	(_PROFILE_ID_ZONE_SHARED(name).data.selfTicks.avg)
+
+
+//-----------------------------------------------------------------------------
+// public preprocessor
+
+#define PROFILE_WATCH_SHARED_SELF(name, float0to1)							\
+	ShinyManager_isSelfZoneGreaterEqual(									\
+		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), float0to1)
+
+#define PROFILE_WATCH_SHARED_TOTAL(name, float0to1)							\
+	ShinyManager_isTotalZoneGreaterEqual(									\
+		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), float0to1)
 
 
 //-----------------------------------------------------------------------------
@@ -111,6 +152,7 @@ restrictions:
 // public preprocessor
 
 #define PROFILE_CODE( code )												\
+																			\
 	do {																	\
 		static _PROFILE_ZONE_DEFINE(_PROFILE_ID_ZONE_CODE(), #code);		\
 		_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_CODE());						\
@@ -152,13 +194,6 @@ restrictions:
 	_PROFILE_BLOCK_DEFINE(_PROFILE_ID_BLOCK());								\
 	_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_SHARED(name))
 #endif
-
-//-----------------------------------------------------------------------------
-// public preprocessor
-
-#define PROFILE_GET_SHARED_DATA( name )										\
-																			\
-	_PROFILE_ID_ZONE_SHARED(name).data										\
 
 
 //-----------------------------------------------------------------------------
@@ -211,10 +246,9 @@ restrictions:
 // internal preprocessor
 
 #define _PROFILE_ZONE_BEGIN( id )											\
-	do {																	\
-		static ShinyNodeCache cache =										\
-			&_ShinyNode_dummy;												\
 																			\
+	do {																	\
+		static ShinyNodeCache cache = &_ShinyNode_dummy;					\
 		ShinyManager_lookupAndBeginNode(&Shiny_instance, &cache, &id);		\
 	} while(0)
 
@@ -239,7 +273,7 @@ SHINY_INLINE ShinyData GetEmptyData() {
 #define PROFILE_BEGIN(name)
 #define PROFILE_BLOCK(name)
 #define PROFILE_FUNC()
-#define PROFILE_CODE(code)				{ code; }
+#define PROFILE_CODE(code)				do { code; } while (0)
 #define PROFILE_SHARED_GLOBAL(name)
 #define PROFILE_SHARED_MEMBER(name)
 #define PROFILE_SHARED_DEFINE(name)
