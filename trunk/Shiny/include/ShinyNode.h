@@ -85,8 +85,8 @@ SHINY_INLINE void ShinyNode_init(ShinyNode* self, ShinyNode* a_parent, struct _S
 	self->_cache = a_cache;
 }
 
-void ShinyNode_updateTree(ShinyNode* self, float a_damping);
-void ShinyNode_updateTreeClean(ShinyNode* self);
+SHINY_API void ShinyNode_updateTree(ShinyNode* self, float a_damping);
+SHINY_API void ShinyNode_updateTreeClean(ShinyNode* self);
 
 SHINY_INLINE void ShinyNode_destroy(ShinyNode* self) {
 	*(self->_cache) = &_ShinyNode_dummy;
@@ -112,11 +112,11 @@ SHINY_INLINE int ShinyNode_isEqual(ShinyNode* self, const ShinyNode* a_parent, c
 	return (self->parent == a_parent && self->zone == a_zone);
 }
 
-const ShinyNode* ShinyNode_findNextInTree(const ShinyNode* self);
+SHINY_API const ShinyNode* ShinyNode_findNextInTree(const ShinyNode* self);
 
-void ShinyNode_clear(ShinyNode* self);
+SHINY_API void ShinyNode_clear(ShinyNode* self);
 
-void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*));
+SHINY_API void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*));
 
 #if __cplusplus
 } // end of extern "C"

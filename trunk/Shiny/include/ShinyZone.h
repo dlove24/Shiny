@@ -60,21 +60,21 @@ SHINY_INLINE void ShinyZone_uninit(ShinyZone *self) {
 	self->next = NULL;
 }
 
-void ShinyZone_preUpdateChain(ShinyZone *first);
-void ShinyZone_updateChain(ShinyZone *first, float a_damping);
-void ShinyZone_updateChainClean(ShinyZone *first);
+SHINY_API void ShinyZone_preUpdateChain(ShinyZone *first);
+SHINY_API void ShinyZone_updateChain(ShinyZone *first, float a_damping);
+SHINY_API void ShinyZone_updateChainClean(ShinyZone *first);
 
-void ShinyZone_resetChain(ShinyZone *first);
+SHINY_API void ShinyZone_resetChain(ShinyZone *first);
 
-ShinyZone* ShinyZone_sortChain(ShinyZone *first);
+SHINY_API ShinyZone* ShinyZone_sortChain(ShinyZone *first);
 
 SHINY_INLINE float ShinyZone_compare(ShinyZone *a, ShinyZone *b) {
 	return b->data.selfTicks.avg - a->data.selfTicks.avg;
 }
 
-void ShinyZone_clear(ShinyZone* self);
+SHINY_API void ShinyZone_clear(ShinyZone* self);
 
-void ShinyZone_enumerateZones(const ShinyZone* a_zone, void (*a_func)(const ShinyZone*));
+SHINY_API void ShinyZone_enumerateZones(const ShinyZone* a_zone, void (*a_func)(const ShinyZone*));
 
 #if __cplusplus
 } // end of extern "C"

@@ -38,6 +38,11 @@ THE SOFTWARE.
 #define SHINY_IS_COMPILED		TRUE
 #endif
 
+// TODO: 
+#ifndef SHINY_STATIC_LINK
+#define SHINY_STATIC_LINK		TRUE
+#endif
+
 // if SHINY_LOOKUP_RATE is defined to TRUE then Shiny will record the success of its hash function. This is useful for debugging. Default is FALSE.
 #ifndef SHINY_LOOKUP_RATE
 #define SHINY_LOOKUP_RATE		FALSE

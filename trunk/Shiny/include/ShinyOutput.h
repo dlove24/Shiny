@@ -33,11 +33,11 @@ THE SOFTWARE.
 
 //-----------------------------------------------------------------------------
 
-int ShinyPrintNodesSize(uint32_t a_count);
-int ShinyPrintZonesSize(uint32_t a_count);
+SHINY_API int ShinyPrintNodesSize(uint32_t a_count);
+SHINY_API int ShinyPrintZonesSize(uint32_t a_count);
 
-void ShinyPrintNodes(char* output, const ShinyNode *a_root);
-void ShinyPrintZones(char* output, const ShinyZone *a_root);
+SHINY_API void ShinyPrintNodes(char* output, const ShinyNode *a_root);
+SHINY_API void ShinyPrintZones(char* output, const ShinyZone *a_root);
 
 
 //-----------------------------------------------------------------------------

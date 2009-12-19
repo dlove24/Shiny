@@ -38,12 +38,12 @@ typedef struct {
 
 //-----------------------------------------------------------------------------
 
-const ShinyTimeUnit* ShinyGetTimeUnit(float ticks);
+SHINY_API const ShinyTimeUnit* ShinyGetTimeUnit(float ticks);
 
-void ShinyGetTicks(shinytick_t *p);
+SHINY_API void ShinyGetTicks(shinytick_t *p);
 
-shinytick_t ShinyGetTickFreq(void);
+SHINY_API shinytick_t ShinyGetTickFreq(void);
 
-float ShinyGetTickInvFreq(void);
+SHINY_API float ShinyGetTickInvFreq(void);
 
 #endif // ifndef SHINY_*_H

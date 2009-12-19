@@ -46,19 +46,31 @@ THE SOFTWARE.
 
 //-----------------------------------------------------------------------------
 
+#if SHINY_STATIC_LINK == TRUE
+#	define SHINY_API
+#else
+#	define SHINY_API	SHINY_EXPORT
+#endif
+
+
+//-----------------------------------------------------------------------------
 
 #if SHINY_COMPILER == SHINY_COMPILER_MSVC
 #	define SHINY_INLINE		__inline
 #	define SHINY_UNUSED
+#	define SHINY_EXPORT		__declspec(dllexport)
 
 #elif SHINY_COMPILER == SHINY_COMPILER_GNUC
 #	define SHINY_INLINE		inline
-#	define SHINY_UNUSED		__attribute__ ((unused))
+#	define SHINY_UNUSED		__attribute__((unused))
+#	define SHINY_EXPORT		__attribute__((dllexport))
 
 #elif SHINY_COMPILER == SHINY_COMPILER_OTHER
 #	define SHINY_INLINE		inline
 #	define SHINY_UNUSED
+#	define SHINY_EXPORT		extern
 #endif
+
 
 //-----------------------------------------------------------------------------
 

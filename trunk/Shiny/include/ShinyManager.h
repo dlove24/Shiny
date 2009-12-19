@@ -93,16 +93,16 @@ SHINY_INLINE void _ShinyManager_appendTicksToCurNode(ShinyManager *self) {
 	self->_lastTick = curTick;
 }
 
-ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_zone);
+SHINY_API ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_zone);
 
-void _ShinyManager_createNodeTable(ShinyManager *self, uint32_t a_count);
-void _ShinyManager_resizeNodeTable(ShinyManager *self, uint32_t a_count);
+SHINY_API void _ShinyManager_createNodeTable(ShinyManager *self, uint32_t a_count);
+SHINY_API void _ShinyManager_resizeNodeTable(ShinyManager *self, uint32_t a_count);
 
-void _ShinyManager_createNodePool(ShinyManager *self, uint32_t a_count);
-void _ShinyManager_resizeNodePool(ShinyManager *self, uint32_t a_count);
+SHINY_API void _ShinyManager_createNodePool(ShinyManager *self, uint32_t a_count);
+SHINY_API void _ShinyManager_resizeNodePool(ShinyManager *self, uint32_t a_count);
 
-ShinyNode* _ShinyManager_createNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_pZone);
-void _ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode);
+SHINY_API ShinyNode* _ShinyManager_createNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_pZone);
+SHINY_API void _ShinyManager_insertNode(ShinyManager *self, ShinyNode* a_pNode);
 
 SHINY_INLINE void _ShinyManager_init(ShinyManager *self) {
 	self->_initialized = TRUE;
@@ -131,8 +131,8 @@ SHINY_INLINE void _ShinyManager_incLookupSuccess(ShinyManager *self) {}
 SHINY_INLINE float ShinyManager_getLookupRate(const ShinyManager *self) { return -1; }
 #endif
 
-void ShinyManager_resetZones(ShinyManager *self);
-void ShinyManager_destroyNodes(ShinyManager *self);
+SHINY_API void ShinyManager_resetZones(ShinyManager *self);
+SHINY_API void ShinyManager_destroyNodes(ShinyManager *self);
 
 SHINY_INLINE float ShinyManager_tableUsage(const ShinyManager *self)  {
 	return ((float) self->nodeCount) / ((float) self->_tableSize);
@@ -172,23 +172,23 @@ SHINY_INLINE void ShinyManager_endCurNode(ShinyManager *self) {
 
 //
 
-void ShinyManager_preLoad(ShinyManager *self);
+SHINY_API void ShinyManager_preLoad(ShinyManager *self);
 
-void ShinyManager_updateClean(ShinyManager *self);
-void ShinyManager_update(ShinyManager *self);
+SHINY_API void ShinyManager_updateClean(ShinyManager *self);
+SHINY_API void ShinyManager_update(ShinyManager *self);
 
-void ShinyManager_clear(ShinyManager *self);
-void ShinyManager_destroy(ShinyManager *self);
+SHINY_API void ShinyManager_clear(ShinyManager *self);
+SHINY_API void ShinyManager_destroy(ShinyManager *self);
 
 SHINY_INLINE void ShinyManager_sortZones(ShinyManager *self) {
 	if (self->rootZone.next)
 		self->rootZone.next = ShinyZone_sortChain(self->rootZone.next);
 }
 
-const char* ShinyManager_getOutputErrorString(ShinyManager *self);
+SHINY_API const char* ShinyManager_getOutputErrorString(ShinyManager *self);
 
-int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
-void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
+SHINY_API int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
+SHINY_API void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 
 #if __cplusplus
 } // end of extern "C"
