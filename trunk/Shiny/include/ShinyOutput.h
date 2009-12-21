@@ -36,6 +36,9 @@ THE SOFTWARE.
 SHINY_API int ShinyPrintNodesSize(uint32_t a_count);
 SHINY_API int ShinyPrintZonesSize(uint32_t a_count);
 
+SHINY_API void ShinyPrintANode(char* output, const ShinyNode *a_node, const ShinyNode *a_root);
+SHINY_API void ShinyPrintAZone(char* output, const ShinyZone *a_zone, const ShinyZone *a_root);
+
 SHINY_API void ShinyPrintNodes(char* output, const ShinyNode *a_root);
 SHINY_API void ShinyPrintZones(char* output, const ShinyZone *a_root);
 

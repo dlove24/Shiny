@@ -90,7 +90,7 @@ ShinyNode* _ShinyManager_dummyNodeTable[] = { NULL };
 #endif
 
 // primary hash function
-SHINY_INLINE uint32_t hash_value(ShinyNode* a_pParent, ShinyZone* a_pZone) {
+SHINY_INLINE uint32_t hash_value(void* a_pParent, void* a_pZone) {
 	uint32_t a = (uint32_t) a_pParent + (uint32_t) a_pZone;
 
 	a = (a+0x7ed55d16) + (a<<12);
@@ -178,7 +178,7 @@ void ShinyManager_destroy(ShinyManager *self) {
 
 //-----------------------------------------------------------------------------
 
-ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ShinyNodeCache* a_cache, ShinyZone* a_zone) {
+ShinyNode* _ShinyManager_lookupNode(ShinyManager *self, ShinyNodeCache *a_cache, ShinyZone *a_zone) {
 	uint32_t nHash = hash_value(self->_curNode, a_zone);
 	uint32_t nIndex = nHash & self->_tableMask;
 	ShinyNode* pNode = self->_nodeTable[nIndex];
@@ -382,12 +382,17 @@ const char* ShinyManager_getOutputErrorString(ShinyManager *self) {
 #	pragma warning (disable: 4996)
 #endif
 
-int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename) {
-	FILE *file = fopen(a_filename, "w");
+int ShinyManager_output(ShinyManager *self, const char *a_filename) {
+	if (!a_filename) {
+		ShinyManager_outputToStream(self, stdout);
 
-	ShinyManager_outputToStream(self, file);
+	} else {
+		FILE *file = fopen(a_filename, "w");
+		if (!file) return FALSE;
+		ShinyManager_outputToStream(self, file);
+		fclose(file);
+	}
 
-	fclose(file);
 	return TRUE;
 }
 
@@ -408,6 +413,8 @@ void ShinyManager_outputToStream(ShinyManager *self, FILE *a_stream) {
 	}
 
 #if SHINY_OUTPUT_MODE & SHINY_OUTPUT_MODE_FLAT
+	ShinyManager_sortZones(self);
+
 	{
 		int size = ShinyPrintZonesSize(self->zoneCount);
 		char *buffer = (char*) malloc(size);

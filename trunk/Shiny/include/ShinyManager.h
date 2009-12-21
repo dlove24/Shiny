@@ -187,22 +187,24 @@ SHINY_INLINE void ShinyManager_sortZones(ShinyManager *self) {
 
 SHINY_API const char* ShinyManager_getOutputErrorString(ShinyManager *self);
 
-SHINY_API int ShinyManager_outputToFile(ShinyManager *self, const char *a_filename);
+SHINY_API int ShinyManager_output(ShinyManager *self, const char *a_filename);
 SHINY_API void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 
 #if __cplusplus
 } // end of extern "C"
 
-SHINY_INLINE std::string ShinyManager_outputNodesToString(ShinyManager *self) {
+SHINY_INLINE std::string ShinyManager_outputTreeToString(ShinyManager *self) {
 	const char* error = ShinyManager_getOutputErrorString(self);
-	if (!error) return ShinyNodesToString(&self->rootNode, self->nodeCount);
-	else return error;
+	if (error) return error;
+	else return ShinyNodesToString(&self->rootNode, self->nodeCount);
 }
 
-SHINY_INLINE std::string ShinyManager_outputZonesToString(ShinyManager *self) {
+SHINY_INLINE std::string ShinyManager_outputFlatToString(ShinyManager *self) {
 	const char* error = ShinyManager_getOutputErrorString(self);
-	if (!error) return ShinyZonesToString(&self->rootZone, self->zoneCount);
-	else return error;
+	if (error) return error;
+
+	ShinyManager_sortZones(self);
+	return ShinyZonesToString(&self->rootZone, self->zoneCount);
 }
 
 extern "C" { // end of c++

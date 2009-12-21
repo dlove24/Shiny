@@ -22,20 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#ifndef SHINY_H
-#define SHINY_H
+#include "Shiny.h"
 
-//-----------------------------------------------------------------------------
+typedef struct lua_State lua_State;
 
-#ifdef __cplusplus
 extern "C" {
-#endif
-
-#include "ShinyMacros.h"
-#include "ShinyManager.h"
-
-#ifdef __cplusplus
+	SHINY_EXPORT int luaopen_shiny(lua_State *L);
 }
-#endif
-
-#endif // ifndef SHINY_*_H

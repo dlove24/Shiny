@@ -23,7 +23,6 @@ THE SOFTWARE.
 */
 
 #include "Shiny.h"
-#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h> // Sleep
@@ -114,7 +113,7 @@ int main() {
 		PROFILE_UPDATE(); // update all profiles
 	}
 
-	PROFILE_OUTPUT(stdout); // print to terminal
+	PROFILE_OUTPUT(NULL); // print to terminal
 
 #ifdef _WIN32
 	system("pause");

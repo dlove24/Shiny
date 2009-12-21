@@ -28,7 +28,11 @@ THE SOFTWARE.
 
 //-----------------------------------------------------------------------------
 
-#define SHINY_VERSION			"Shiny Profiler 2.5"
+#define SHINY_VERSION			"2.5"
+#define SHINY_SHORTNAME			"Shiny"
+#define SHINY_FULLNAME			"Shiny Profiler"
+#define SHINY_COPYRIGHT			"Copyright (C) 2007-2009 Aidin Abedi"
+#define SHINY_DESCRIPTION		"Shiny is a elegent profiler designed to help finding bottlenecks in your project."
 
 
 //-----------------------------------------------------------------------------

@@ -23,7 +23,6 @@ THE SOFTWARE.
 */
 
 #include "Shiny.h"
-#include <stdlib.h>
 
 #include "Shared.h"
 

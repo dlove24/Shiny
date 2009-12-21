@@ -81,86 +81,97 @@ void ShinyZone_resetChain(ShinyZone *first) {
 
 //-----------------------------------------------------------------------------
 
-/*
- * This is the actual sort function. Notice that it returns the new
- * head of the list. (It has to, because the head will not
- * generally be the same ShinyZone after the sort.) So unlike sorting
- * an array, where you can do
- * 
- *     sort(myarray);
- * 
- * you now have to do
- * 
- *     list = listsort(mylist);
- */
-ShinyZone* ShinyZone_sortChain(ShinyZone *first) {
-	ShinyZone *p, *q, *e, *tail, *list = first;
-	int insize, nmerges, psize, qsize, i;
+/* A Linked-List Memory Sort
+   by Philip J. Erdelsky
+   pje@efgh.com
+   http://www.alumni.caltech.edu/~pje/
+*/
 
-	insize = 1;
+ShinyZone* ShinyZone_sortChain(ShinyZone *p)
+{
+  unsigned base;
+  unsigned long block_size;
 
-	while (1) {
-		p = list;
-		list = NULL;
-		tail = NULL;
+  struct tape
+  {
+    ShinyZone *first, *last;
+    unsigned long count;
+  } tape[4];
 
-		nmerges = 0;  /* count number of merges we do in this pass */
+  /* Distribute the records alternately to tape[0] and tape[1]. */
 
-		while (p) {
-			nmerges++;  /* there exists a merge to be done */
-			/* step `insize' places along from p */
-			q = p;
-			psize = 0;
-			for (i = 0; i < insize; i++) {
-				psize++;
-				q = q->next;
-				if (!q) break;
-			}
+  tape[0].count = tape[1].count = 0L;
+  tape[0].first = NULL;
+  base = 0;
+  while (p != NULL)
+  {
+    ShinyZone *next = p->next;
+    p->next = tape[base].first;
+    tape[base].first = p;
+    tape[base].count++;
+    p = next;
+    base ^= 1;
+  }
 
-			/* if q hasn't fallen off end, we have two lists to merge */
-			qsize = insize;
+  /* If the list is empty or contains only a single record, then */
+  /* tape[1].count == 0L and this part is vacuous.               */
 
-			/* now we have two lists; merge them */
-			while (psize > 0 || (qsize > 0 && q)) {
+  for (base = 0, block_size = 1L; tape[base+1].count != 0L;
+    base ^= 2, block_size <<= 1)
+  {
+    int dest;
+    struct tape *tape0, *tape1;
+    tape0 = tape + base;
+    tape1 = tape + base + 1;
+    dest = base ^ 2;
+    tape[dest].count = tape[dest+1].count = 0;
+    for (; tape0->count != 0; dest ^= 1)
+    {
+      unsigned long n0, n1;
+      struct tape *output_tape = tape + dest;
+      n0 = n1 = block_size;
+      while (1)
+      {
+        ShinyZone *chosen_record;
+        struct tape *chosen_tape;
+        if (n0 == 0 || tape0->count == 0)
+        {
+          if (n1 == 0 || tape1->count == 0)
+            break;
+          chosen_tape = tape1;
+          n1--;
+        }
+        else if (n1 == 0 || tape1->count == 0)
+        {
+          chosen_tape = tape0;
+          n0--;
+        }
+        else if (ShinyZone_compare(tape0->first, tape1->first) > 0)
+        {
+          chosen_tape = tape1;
+          n1--;
+        }
+        else
+        {
+          chosen_tape = tape0;
+          n0--;
+        }
+        chosen_tape->count--;
+        chosen_record = chosen_tape->first;
+        chosen_tape->first = chosen_record->next;
+        if (output_tape->count == 0)
+          output_tape->first = chosen_record;
+        else
+          output_tape->last->next = chosen_record;
+        output_tape->last = chosen_record;
+        output_tape->count++;
+      }
+    }
+  }
 
-				/* decide whether next ShinyZone of merge comes from p or q */
-				if (psize == 0) {
-					/* p is empty; e must come from q. */
-					e = q; q = q->next; qsize--;
-				} else if (qsize == 0 || !q) {
-					/* q is empty; e must come from p. */
-					e = p; p = p->next; psize--;
-				} else if (ShinyZone_compare(p, q) <= 0) {
-					/* First ShinyZone of p is lower (or same);
-					 * e must come from p. */
-					e = p; p = p->next; psize--;
-				} else {
-					/* First ShinyZone of q is lower; e must come from q. */
-					e = q; q = q->next; qsize--;
-				}
-
-				/* add the next ShinyZone to the merged list */
-				if (tail) {
-					tail->next = e;
-				} else {
-					list = e;
-				}
-				tail = e;
-			}
-
-			/* now p has stepped `insize' places along, and q has too */
-			p = q;
-		}
-		
-		tail->next = NULL;
-
-		/* If we have done only one merge, we're finished. */
-		if (nmerges <= 1)   /* allow for nmerges==0, the empty list case */
-			return list;
-
-		/* Otherwise repeat, merging lists twice the size */
-		insize *= 2;
-	}
+  if (tape[base].count > 1L)
+    tape[base].last->next = NULL;
+  return tape[base].first;
 }
 
 

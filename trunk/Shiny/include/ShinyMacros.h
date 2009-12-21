@@ -36,24 +36,24 @@ THE SOFTWARE.
 #define PROFILE_UPDATE()													\
 	ShinyManager_update(&Shiny_instance)
 
-#define PROFILE_SET_DAMPING(float0to1)										\
-	Shiny_instance.damping = (float0to1);
+#define PROFILE_SET_DAMPING(from0to1)										\
+	Shiny_instance.damping = (from0to1);
 
 #define PROFILE_GET_DAMPING()												\
 	(Shiny_instance.damping)
 
-#define PROFILE_OUTPUT_FILE(filename)										\
-	ShinyManager_outputToFile(&Shiny_instance, (filename))
+#define PROFILE_OUTPUT(filename)											\
+	ShinyManager_output(&Shiny_instance, (filename))
 
-#define PROFILE_OUTPUT(stream)												\
+#define PROFILE_OUTPUT_STREAM(stream)										\
 	ShinyManager_outputToStream(&Shiny_instance, (stream))
 
 #ifdef __cplusplus
 #define PROFILE_GET_TREE_STRING()											\
-	ShinyManager_outputNodesToString(&Shiny_instance)
+	ShinyManager_outputTreeToString(&Shiny_instance)
 
 #define PROFILE_GET_FLAT_STRING()											\
-	ShinyManager_outputZonesToString(&Shiny_instance)
+	ShinyManager_outputFlatToString(&Shiny_instance)
 #endif
 
 #define PROFILE_DESTROY()													\
@@ -103,13 +103,13 @@ THE SOFTWARE.
 //-----------------------------------------------------------------------------
 // public preprocessor
 
-#define PROFILE_WATCH_SHARED_SELF(name, float0to1)							\
+#define PROFILE_WATCH_SHARED_SELF(name, from0to1)							\
 	ShinyManager_isSelfZoneGreaterEqual(									\
-		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), float0to1)
+		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), from0to1)
 
-#define PROFILE_WATCH_SHARED_TOTAL(name, float0to1)							\
+#define PROFILE_WATCH_SHARED_TOTAL(name, from0to1)							\
 	ShinyManager_isTotalZoneGreaterEqual(									\
-		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), float0to1)
+		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), from0to1)
 
 
 //-----------------------------------------------------------------------------
@@ -265,8 +265,8 @@ SHINY_INLINE ShinyData GetEmptyData() {
 #define PROFILE_UPDATE()
 #define PROFILE_SET_DAMPING(x)
 #define PROFILE_GET_DAMPING()			0.0f
-#define PROFILE_OUTPUT_FILE(x)
 #define PROFILE_OUTPUT(x)
+#define PROFILE_OUTPUT_STREAM(x)
 #define PROFILE_CLEAR()
 #define PROFILE_GET_TREE_STRING()		std::string()
 #define PROFILE_GET_FLAT_STRING()		std::string()
