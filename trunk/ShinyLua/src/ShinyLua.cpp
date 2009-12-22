@@ -64,9 +64,9 @@ typedef HASHMAP<const void*, Profile> ProfileMap;
 
 //-----------------------------------------------------------------------------
 
-int _ShinyLua_running = 0;
+int is_running = 0;
 
-ProfileMap mProfiles;
+ProfileMap profiles;
 
 
 //-----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ Profile* FindProfile(lua_State *L, lua_Debug *ar) {
 	key = lua_topointer(L, -1);
 	lua_pop(L, 1);
 
-	Profile *prof = &mProfiles[key];
+	Profile *prof = &profiles[key];
 
 	if (!prof->zone.name) {
 		lua_getinfo(L, "nS", ar);
@@ -139,11 +139,10 @@ Profile* FindProfile(lua_State *L, lua_Debug *ar) {
 	return prof;
 }
 
+
 //-----------------------------------------------------------------------------
 
-
-/* called by Lua (via the callhook mechanism) */
-void _ShinyLua_callhook(lua_State *L, lua_Debug *ar) {
+void callhook(lua_State *L, lua_Debug *ar) {
 	switch (ar->event) {
 		case LUA_HOOKCALL:
 			{
@@ -161,15 +160,24 @@ void _ShinyLua_callhook(lua_State *L, lua_Debug *ar) {
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+
 int ShinyLua_update(lua_State *L) {
-	//
+	PROFILE_UPDATE();
 	return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+
 int ShinyLua_clear(lua_State *L) {
-	//
+	PROFILE_CLEAR();
 	return 0;
 }
+
+
+//-----------------------------------------------------------------------------
 
 int ShinyLua_damping(lua_State *L) {
 	if (lua_gettop(L) == 1) {
@@ -183,17 +191,23 @@ int ShinyLua_damping(lua_State *L) {
 	return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+
 int ShinyLua_enabled(lua_State *L) {
 	if (lua_gettop(L) == 1) {
-		_ShinyLua_running = lua_isboolean(L, -1)? lua_toboolean(L, -1) : luaL_checkint(L, -1);
-		lua_sethook(L, _ShinyLua_callhook, _ShinyLua_running? (LUA_MASKCALL | LUA_MASKRET) : 0, 0);
+		is_running = lua_isboolean(L, -1)? lua_toboolean(L, -1) : luaL_checkint(L, -1);
+		lua_sethook(L, callhook, is_running? (LUA_MASKCALL | LUA_MASKRET) : 0, 0);
 
 	} else {
-		lua_pushboolean(L, _ShinyLua_running);
+		lua_pushboolean(L, is_running);
 	}
 
 	return 0;
 }
+
+
+//-----------------------------------------------------------------------------
 
 int ShinyLua_output(lua_State *L) {
 	const char* outfile = NULL;
@@ -206,15 +220,24 @@ int ShinyLua_output(lua_State *L) {
 	return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+
 int ShinyLua_treeString(lua_State *L) {
-	//lua_pushstring();
+	lua_pushstring(L, PROFILE_GET_TREE_STRING().c_str());
 	return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+
 int ShinyLua_flatString(lua_State *L) {
-	//lua_pushstring();
+	lua_pushstring(L, PROFILE_GET_FLAT_STRING().c_str());
 	return 0;
 }
+
+
+//-----------------------------------------------------------------------------
 
 int luaopen_profiler(lua_State *L) {
 	const luaL_reg funcs[] = {
@@ -228,8 +251,8 @@ int luaopen_profiler(lua_State *L) {
 		{ NULL, NULL }
 	};
 
-	_ShinyLua_running = 1;
-	lua_sethook(L, _ShinyLua_callhook, LUA_MASKCALL | LUA_MASKRET, 0);
+	is_running = 1;
+	lua_sethook(L, callhook, LUA_MASKCALL | LUA_MASKRET, 0);
 
 	luaL_openlib(L, "shiny", funcs, 0);
 
