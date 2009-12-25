@@ -26,4 +26,15 @@ THE SOFTWARE.
 
 typedef struct lua_State lua_State;
 
-SHINY_EXPORT int luaopen_shiny(lua_State *L);
+extern "C" {
+
+	SHINY_EXPORT int luaopen_ShinyLua(lua_State *L);
+
+	SHINY_EXPORT int ShinyLua_update(lua_State *L);
+	SHINY_EXPORT int ShinyLua_clear(lua_State *L);
+	SHINY_EXPORT int ShinyLua_damping(lua_State *L);
+	SHINY_EXPORT int ShinyLua_enabled(lua_State *L);
+	SHINY_EXPORT int ShinyLua_output(lua_State *L);
+	SHINY_EXPORT int ShinyLua_treeString(lua_State *L);
+	SHINY_EXPORT int ShinyLua_flatString(lua_State *L);
+}

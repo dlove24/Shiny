@@ -183,12 +183,12 @@ int ShinyLua_damping(lua_State *L) {
 	if (lua_gettop(L) == 1) {
 		float damping = (float) luaL_checknumber(L, -1);
 		PROFILE_SET_DAMPING(damping);
+		return 0;
 
 	} else {
 		lua_pushnumber(L, PROFILE_GET_DAMPING());
+		return 1;
 	}
-
-	return 0;
 }
 
 
@@ -198,12 +198,12 @@ int ShinyLua_enabled(lua_State *L) {
 	if (lua_gettop(L) == 1) {
 		is_running = lua_isboolean(L, -1)? lua_toboolean(L, -1) : luaL_checkint(L, -1);
 		lua_sethook(L, callhook, is_running? (LUA_MASKCALL | LUA_MASKRET) : 0, 0);
+		return 0;
 
 	} else {
 		lua_pushboolean(L, is_running);
+		return 1;
 	}
-
-	return 0;
 }
 
 
@@ -225,7 +225,7 @@ int ShinyLua_output(lua_State *L) {
 
 int ShinyLua_treeString(lua_State *L) {
 	lua_pushstring(L, PROFILE_GET_TREE_STRING().c_str());
-	return 0;
+	return 1;
 }
 
 
@@ -233,13 +233,13 @@ int ShinyLua_treeString(lua_State *L) {
 
 int ShinyLua_flatString(lua_State *L) {
 	lua_pushstring(L, PROFILE_GET_FLAT_STRING().c_str());
-	return 0;
+	return 1;
 }
 
 
 //-----------------------------------------------------------------------------
 
-int luaopen_profiler(lua_State *L) {
+int luaopen_ShinyLua(lua_State *L) {
 	const luaL_reg funcs[] = {
 		{ "update", ShinyLua_update },
 		{ "clear", ShinyLua_clear },
