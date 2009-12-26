@@ -150,7 +150,7 @@ void callhook(lua_State *L, lua_Debug *ar) {
 	lua_getinfo(L, "n", ar);
 	if (!ar->name) return;
 
-	if (ar->even == LUA_HOOKCALL) {
+	if (ar->event == LUA_HOOKCALL) {
 		Profile *prof = FindProfile(L, ar);
 		ShinyManager_lookupAndBeginNode(&Shiny_instance, &prof->cache, &prof->zone);
 		return;
@@ -195,17 +195,31 @@ int ShinyLua_damping(lua_State *L) {
 
 /*---------------------------------------------------------------------------*/
 
-int ShinyLua_enabled(lua_State *L) {
-	if (lua_gettop(L) == 1) {
-		is_running = lua_isboolean(L, -1)? lua_toboolean(L, -1) : luaL_checkint(L, -1);
-		lua_sethook(L, callhook, is_running? (LUA_MASKCALL | LUA_MASKRET) : 0, 0);
-		return 0;
-
-	} else {
-		lua_pushboolean(L, is_running);
-		return 1;
-	}
+int ShinyLua_start(lua_State *L) {
+	if (is_running) return;
+	is_running = 1;
+	lua_sethook(L, callhook, LUA_MASKCALL | LUA_MASKRET, 0);
+	return 0;
 }
+
+
+/*---------------------------------------------------------------------------*/
+
+int ShinyLua_stop(lua_State *L) {
+	if (!is_running) return;
+	is_running = 0;
+	lua_sethook(L, callhook, 0, 0);
+	return 0;
+}
+
+
+/*---------------------------------------------------------------------------*/
+
+int ShinyLua_is_running(lua_State *L) {
+	lua_pushboolean(L, is_running);
+	return 1;
+}
+
 
 
 /*---------------------------------------------------------------------------*/
@@ -224,7 +238,7 @@ int ShinyLua_output(lua_State *L) {
 
 /*---------------------------------------------------------------------------*/
 
-int ShinyLua_treeString(lua_State *L) {
+int ShinyLua_tree_string(lua_State *L) {
 	lua_pushstring(L, PROFILE_GET_TREE_STRING().c_str());
 	return 1;
 }
@@ -232,7 +246,7 @@ int ShinyLua_treeString(lua_State *L) {
 
 /*---------------------------------------------------------------------------*/
 
-int ShinyLua_flatString(lua_State *L) {
+int ShinyLua_flat_string(lua_State *L) {
 	lua_pushstring(L, PROFILE_GET_FLAT_STRING().c_str());
 	return 1;
 }
@@ -246,14 +260,13 @@ int luaopen_ShinyLua(lua_State *L) {
 		{ "clear", ShinyLua_clear },
 		{ "output", ShinyLua_output },
 		{ "damping", ShinyLua_damping },
-		{ "enabled", ShinyLua_enabled },
-		{ "tree_string", ShinyLua_treeString },
-		{ "flat_string", ShinyLua_flatString },
+		{ "start", ShinyLua_start },
+		{ "stop", ShinyLua_stop },
+		{ "is_running", ShinyLua_is_running },
+		{ "tree_string", ShinyLua_tree_string },
+		{ "flat_string", ShinyLua_flat_string },
 		{ NULL, NULL }
 	};
-
-	is_running = 1;
-	lua_sethook(L, callhook, LUA_MASKCALL | LUA_MASKRET, 0);
 
 	luaL_openlib(L, "shiny", funcs, 0);
 
