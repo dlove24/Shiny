@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include "ShinyPrereqs.h"
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct {
 	uint32_t entryCount;
@@ -36,7 +36,7 @@ typedef struct {
 } ShinyLastData;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct {
 	shinytick_t cur;
@@ -92,4 +92,4 @@ SHINY_INLINE void ShinyData_clearCurrent(ShinyData *self) {
 	self->childTicks.cur = 0;
 }
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

@@ -30,8 +30,8 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
-// public preprocessors
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_UPDATE()													\
 	ShinyManager_update(&Shiny_instance)
@@ -66,8 +66,8 @@ THE SOFTWARE.
 	ShinyManager_sortZones(&Shiny_instance)
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_GET_TOTAL_TICKS_CUR()										\
 	ShinyData_totalTicksCur(&Shiny_instance.rootZone.data)
@@ -100,8 +100,8 @@ THE SOFTWARE.
 	(_PROFILE_ID_ZONE_SHARED(name).data.selfTicks.avg)
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_WATCH_SHARED_SELF(name, from0to1)							\
 	ShinyManager_isSelfZoneGreaterEqual(									\
@@ -112,15 +112,15 @@ THE SOFTWARE.
 		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), from0to1)
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_END()														\
 	ShinyManager_endCurNode(&Shiny_instance)
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_BEGIN( name )												\
 																			\
@@ -128,8 +128,8 @@ THE SOFTWARE.
 	_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE(name))
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #ifdef __cplusplus
 #define PROFILE_BLOCK( name )												\
@@ -138,8 +138,8 @@ THE SOFTWARE.
 	PROFILE_BEGIN(name)
 #endif
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #ifdef __cplusplus
 #define PROFILE_FUNC()														\
@@ -149,8 +149,8 @@ THE SOFTWARE.
 	_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_FUNC())
 #endif
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_CODE( code )												\
 																			\
@@ -162,32 +162,32 @@ THE SOFTWARE.
 	} while(0)
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_SHARED_EXTERN( name )										\
 																			\
 	_PROFILE_ZONE_DECLARE(extern, _PROFILE_ID_ZONE_SHARED(name))
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_SHARED_DEFINE( name )										\
 																			\
 	_PROFILE_ZONE_DEFINE(_PROFILE_ID_ZONE_SHARED(name), #name)
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #define PROFILE_SHARED_BEGIN( name )										\
 																			\
 	_PROFILE_ZONE_BEGIN(_PROFILE_ID_ZONE_SHARED(name))
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #ifdef __cplusplus
 #define PROFILE_SHARED_BLOCK( name )										\
@@ -197,8 +197,8 @@ THE SOFTWARE.
 #endif
 
 
-//-----------------------------------------------------------------------------
-// public preprocessor
+/*---------------------------------------------------------------------------*/
+/* public preprocessors */
 
 #if SHINY_HAS_ENABLED == TRUE
 #define PROFILE_SET_ENABLED( boolean )										\
@@ -206,8 +206,8 @@ THE SOFTWARE.
 #endif
 
 
-//-----------------------------------------------------------------------------
-// internal preprocessors
+/*---------------------------------------------------------------------------*/
+/* internal preprocessors */
 
 #define _PROFILE_ID_ZONE( name )			__ShinyZone_##name
 #define _PROFILE_ID_ZONE_FUNC()				__ShinyZoneFunc
@@ -216,8 +216,8 @@ THE SOFTWARE.
 #define _PROFILE_ID_BLOCK()					__ShinyBlock
 
 
-//-----------------------------------------------------------------------------
-// internal preprocessor
+/*---------------------------------------------------------------------------*/
+/* internal preprocessor */
 
 #define _PROFILE_ZONE_DEFINE( id, string )									\
 																			\
@@ -227,24 +227,24 @@ THE SOFTWARE.
 	}
 
 
-//-----------------------------------------------------------------------------
-// internal preprocessor
+/*---------------------------------------------------------------------------*/
+/* internal preprocessor */
 
 #define _PROFILE_ZONE_DECLARE( prefix, id )									\
 																			\
 	prefix ShinyZone id
 
 
-//-----------------------------------------------------------------------------
-// internal preprocessor
+/*---------------------------------------------------------------------------*/
+/* internal preprocessor */
 
 #define _PROFILE_BLOCK_DEFINE( id )											\
 																			\
 	ShinyEndNodeOnDestruction SHINY_UNUSED id
 
 
-//-----------------------------------------------------------------------------
-// internal preprocessor
+/*---------------------------------------------------------------------------*/
+/* internal preprocessor */
 
 #define _PROFILE_ZONE_BEGIN( id )											\
 																			\
@@ -253,9 +253,9 @@ THE SOFTWARE.
 		ShinyManager_lookupAndBeginNode(&Shiny_instance, &cache, &id);		\
 	} while(0)
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
-#else // #if SHINY_IS_COMPILED == TRUE
+#else /* #if SHINY_IS_COMPILED == TRUE */
 
 SHINY_INLINE ShinyData GetEmptyData() {
 	ShinyData a = { { 0, 0 }, { 0, 0 }, { 0, 0 } };
@@ -289,4 +289,4 @@ SHINY_INLINE ShinyData GetEmptyData() {
 
 #endif
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

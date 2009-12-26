@@ -36,7 +36,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct {
 #if SHINY_HAS_ENABLED == TRUE
@@ -47,7 +47,7 @@ typedef struct {
 
 	ShinyNode* _curNode;
 
-	uint32_t _tableMask; // = _tableSize - 1
+	uint32_t _tableMask; /* = _tableSize - 1 */
 
 	ShinyNodeTable* _nodeTable;
 
@@ -76,14 +76,14 @@ typedef struct {
 } ShinyManager;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 extern ShinyNode* _ShinyManager_dummyNodeTable[];
 
 extern ShinyManager Shiny_instance;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE void _ShinyManager_appendTicksToCurNode(ShinyManager *self) {
 	shinytick_t curTick;
@@ -170,7 +170,7 @@ SHINY_INLINE void ShinyManager_endCurNode(ShinyManager *self) {
 	self->_curNode = self->_curNode->parent;
 }
 
-//
+/**/
 
 SHINY_API void ShinyManager_preLoad(ShinyManager *self);
 
@@ -191,7 +191,7 @@ SHINY_API int ShinyManager_output(ShinyManager *self, const char *a_filename);
 SHINY_API void ShinyManager_outputToStream(ShinyManager *self, FILE *stream);
 
 #if __cplusplus
-} // end of extern "C"
+} /* end of extern "C" */
 
 SHINY_INLINE std::string ShinyManager_outputTreeToString(ShinyManager *self) {
 	const char* error = ShinyManager_getOutputErrorString(self);
@@ -207,7 +207,7 @@ SHINY_INLINE std::string ShinyManager_outputFlatToString(ShinyManager *self) {
 	return ShinyZonesToString(&self->rootZone, self->zoneCount);
 }
 
-extern "C" { // end of c++
+extern "C" { /* end of c++ */
 #endif
 
 SHINY_INLINE int ShinyManager_isSelfZoneGreaterEqual(ShinyManager *self, ShinyZone* a_zone, float a_percentage) {
@@ -220,7 +220,7 @@ SHINY_INLINE int ShinyManager_isTotalZoneGreaterEqual(ShinyManager *self, ShinyZ
 		<= (float) ShinyData_totalTicksCur(&a_zone->data); 
 }
 
-//
+/**/
 
 SHINY_INLINE void ShinyManager_enumerateNodes(ShinyManager *self, void (*a_func)(const ShinyNode*)) {
 	ShinyNode_enumerateNodes(&self->rootNode, a_func);
@@ -231,7 +231,7 @@ SHINY_INLINE void ShinyManager_enumerateZones(ShinyManager *self, void (*a_func)
 }
 
 #if __cplusplus
-} // end of extern "C"
+} /* end of extern "C" */
 
 template <class T> void ShinyManager_enumerateNodes(ShinyManager *self, T* a_this, void (T::*a_func)(const ShinyNode*)) {
 	ShinyNode_enumerateNodes(&self->rootNode, a_this, a_func);
@@ -241,14 +241,14 @@ template <class T> void ShinyManager_enumerateZones(ShinyManager *self, T* a_thi
 	ShinyZone_enumerateZones(&self->rootZone, a_this, a_func);
 }
 
-extern "C" { // end of c++
+extern "C" { /* end of c++ */
 #endif
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 #if __cplusplus
-} // end of extern "C"
+} /* end of extern "C" */
 
 class ShinyEndNodeOnDestruction {
 public:
@@ -258,10 +258,10 @@ public:
 	}
 };
 
-extern "C" { // end of c++
+extern "C" { /* end of c++ */
 #endif
 
 
-#endif // if SHINY_IS_COMPILED == TRUE
+#endif /* if SHINY_IS_COMPILED == TRUE */
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

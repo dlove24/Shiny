@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 #if SHINY_IS_COMPILED == TRUE
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node) {
 	ShinyZone *zone = a_node->zone;
@@ -59,7 +59,7 @@ ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node) {
 	return self;
 }
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNodeState* ShinyNodeState_pop(ShinyNodeState *a_top) {
 	ShinyNodeState *prev = a_top->_prev;
@@ -67,7 +67,7 @@ ShinyNodeState* ShinyNodeState_pop(ShinyNodeState *a_top) {
 	return prev;
 }
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping) {
 	ShinyNode *node = self->node;
@@ -87,7 +87,7 @@ ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNode* ShinyNodeState_finishAndGetNextClean(ShinyNodeState *self) {
 	ShinyNode *node = self->node;

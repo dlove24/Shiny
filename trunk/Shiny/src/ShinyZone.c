@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 #if SHINY_IS_COMPILED == TRUE
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyZone_preUpdateChain(ShinyZone *first) {
 	ShinyZone* zone = first;
@@ -40,7 +40,7 @@ void ShinyZone_preUpdateChain(ShinyZone *first) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyZone_updateChain(ShinyZone *first, float a_damping) {
 	ShinyZone* zone = first;
@@ -52,7 +52,7 @@ void ShinyZone_updateChain(ShinyZone *first, float a_damping) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyZone_updateChainClean(ShinyZone *first) {
 	ShinyZone* zone = first;
@@ -64,7 +64,7 @@ void ShinyZone_updateChainClean(ShinyZone *first) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyZone_resetChain(ShinyZone *first) {
 	ShinyZone* zone = first, *temp;
@@ -77,7 +77,7 @@ void ShinyZone_resetChain(ShinyZone *first) {
 	} while (zone);
 }
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 /* A Linked-List Memory Sort
    by Philip J. Erdelsky
@@ -87,7 +87,7 @@ void ShinyZone_resetChain(ShinyZone *first) {
    Modified by Aidin Abedi
 */
 
-ShinyZone* ShinyZone_sortChain(ShinyZone **first) // returns ptr to last zone
+ShinyZone* ShinyZone_sortChain(ShinyZone **first) /* return ptr to last zone */
 {
 	ShinyZone *p = *first;
 
@@ -183,14 +183,14 @@ ShinyZone* ShinyZone_sortChain(ShinyZone **first) // returns ptr to last zone
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyZone_clear(ShinyZone* self) {
 	memset(self, 0, sizeof(ShinyZone));
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyZone_enumerateZones(const ShinyZone* a_zone, void (*a_func)(const ShinyZone*)) {
 	a_func(a_zone);

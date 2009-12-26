@@ -38,7 +38,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 #define OUTPUT_WIDTH_CALL	6
 #define OUTPUT_WIDTH_TIME	6
@@ -49,7 +49,7 @@ THE SOFTWARE.
 #define OUTPUT_WIDTH_NAME	(OUTPUT_WIDTH_SUM - OUTPUT_WIDTH_DATA)
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE char* printHeader(char *output, const char *a_title) {
 	snprintf(output, OUTPUT_WIDTH_SUM + TRAILING,
@@ -63,7 +63,7 @@ SHINY_INLINE char* printHeader(char *output, const char *a_title) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE char* printData(char *output, const ShinyData *a_data, float a_topercent) {
 	float totalTicksAvg = ShinyData_totalTicksAvg(a_data);
@@ -82,7 +82,7 @@ SHINY_INLINE char* printData(char *output, const ShinyData *a_data, float a_tope
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE char* printNode(char* output, const ShinyNode *a_node, float a_topercent) {
 	int offset = a_node->entryLevel * 2;
@@ -97,7 +97,7 @@ SHINY_INLINE char* printNode(char* output, const ShinyNode *a_node, float a_tope
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE char* printZone(char* output, const ShinyZone *a_zone, float a_topercent) {
 	snprintf(output, OUTPUT_WIDTH_NAME + TRAILING, "%-*s",
@@ -110,21 +110,21 @@ SHINY_INLINE char* printZone(char* output, const ShinyZone *a_zone, float a_tope
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyPrintNodesSize(uint32_t a_count) {
 	return (1 + a_count) * (OUTPUT_WIDTH_SUM + 1);
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyPrintZonesSize(uint32_t a_count) {
 	return (1 + a_count) * (OUTPUT_WIDTH_SUM + 1);
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyPrintANode(char* output, const ShinyNode *a_node, const ShinyNode *a_root) {
 	float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
@@ -133,7 +133,7 @@ void ShinyPrintANode(char* output, const ShinyNode *a_node, const ShinyNode *a_r
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyPrintAZone(char* output, const ShinyZone *a_zone, const ShinyZone *a_root) {
 	float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
@@ -142,7 +142,7 @@ void ShinyPrintAZone(char* output, const ShinyZone *a_zone, const ShinyZone *a_r
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyPrintNodes(char* output, const ShinyNode *a_root) {
 	float fTicksToPc = 100.0f / a_root->data.childTicks.avg;
@@ -165,7 +165,7 @@ void ShinyPrintNodes(char* output, const ShinyNode *a_root) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyPrintZones(char* output, const ShinyZone *a_root) {
 	float fTicksToPc = 100.0f / a_root->data.childTicks.avg;

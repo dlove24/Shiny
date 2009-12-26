@@ -30,7 +30,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct _ShinyNodeState {
 	ShinyNode *node;
@@ -40,7 +40,7 @@ typedef struct _ShinyNodeState {
 } ShinyNodeState;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNodeState* ShinyNodeState_push(ShinyNodeState *a_top, ShinyNode *a_node);
 ShinyNodeState* ShinyNodeState_pop(ShinyNodeState *a_top);
@@ -48,6 +48,6 @@ ShinyNodeState* ShinyNodeState_pop(ShinyNodeState *a_top);
 ShinyNode* ShinyNodeState_finishAndGetNext(ShinyNodeState *self, float a_damping);
 ShinyNode* ShinyNodeState_finishAndGetNextClean(ShinyNodeState *self);
 
-#endif // if SHINY_IS_COMPILED == TRUE
+#endif /* if SHINY_IS_COMPILED == TRUE */
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

@@ -30,7 +30,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct _ShinyNodePool {
 
@@ -44,7 +44,7 @@ typedef struct _ShinyNodePool {
 } ShinyNodePool;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE ShinyNode* ShinyNodePool_firstItem(ShinyNodePool *self) {
 	return &(self->_items[0]);
@@ -60,6 +60,6 @@ void ShinyNodePool_destroy(ShinyNodePool *self);
 uint32_t ShinyNodePool_memoryUsageChain(ShinyNodePool *first);
 
 
-#endif // if SHINY_IS_COMPILED == TRUE
+#endif /* if SHINY_IS_COMPILED == TRUE */
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

@@ -31,7 +31,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct _ShinyNode {
 
@@ -51,16 +51,15 @@ typedef struct _ShinyNode {
 
 	ShinyData data;
 
-	//
 } ShinyNode;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 extern ShinyNode _ShinyNode_dummy;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_INLINE void ShinyNode_addChild(ShinyNode* self,  ShinyNode* a_child) {
 	if (self->childCount++) {
@@ -74,7 +73,7 @@ SHINY_INLINE void ShinyNode_addChild(ShinyNode* self,  ShinyNode* a_child) {
 }
 
 SHINY_INLINE void ShinyNode_init(ShinyNode* self, ShinyNode* a_parent, struct _ShinyZone* a_zone, ShinyNodeCache* a_cache) {
-	// NOTE: all member variables are assumed to be zero when allocated
+	/* NOTE: all member variables are assumed to be zero when allocated */
 
 	self->zone = a_zone;
 	self->parent = a_parent;
@@ -119,7 +118,7 @@ SHINY_API void ShinyNode_clear(ShinyNode* self);
 SHINY_API void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*));
 
 #if __cplusplus
-} // end of extern "C"
+} /* end of extern "C" */
 
 template <class T>
 void ShinyNode_enumerateNodes(const ShinyNode* a_node, T* a_this, void (T::*a_func)(const ShinyNode*)) {
@@ -129,9 +128,9 @@ void ShinyNode_enumerateNodes(const ShinyNode* a_node, T* a_this, void (T::*a_fu
 	if (a_node->nextSibling) ShinyNode_enumerateNodes(a_node->nextSibling, a_this, a_func);
 }
 
-extern "C" { // end of c++
+extern "C" { /* end of c++ */
 #endif
 
-#endif // if SHINY_IS_COMPILED == TRUE
+#endif /* if SHINY_IS_COMPILED == TRUE */
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

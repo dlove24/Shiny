@@ -31,7 +31,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNodePool* ShinyNodePool_create(uint32_t a_items) {
 	ShinyNodePool* pPool = (ShinyNodePool*)
@@ -46,7 +46,7 @@ ShinyNodePool* ShinyNodePool_create(uint32_t a_items) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 uint32_t ShinyNodePool_memoryUsageChain(ShinyNodePool *first) {
 	uint32_t bytes = (uint32_t) ((char*) first->endOfItems - (char*) first);
@@ -61,7 +61,7 @@ uint32_t ShinyNodePool_memoryUsageChain(ShinyNodePool *first) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyNodePool_destroy(ShinyNodePool *self) {
 	ShinyNode* firstNode = ShinyNodePool_firstItem(self);
@@ -70,7 +70,7 @@ void ShinyNodePool_destroy(ShinyNodePool *self) {
 	while (firstNode != lastNode)
 		ShinyNode_destroy(firstNode++);
 
-	// TODO: make this into a loop or a tail recursion
+	/* TODO: make this into a loop or a tail recursion */
 	if (self->nextPool) ShinyNodePool_destroy(self->nextPool);
 	free(self);
 }

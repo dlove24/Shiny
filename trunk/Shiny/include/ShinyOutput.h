@@ -31,7 +31,7 @@ THE SOFTWARE.
 #if SHINY_IS_COMPILED == TRUE
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_API int ShinyPrintNodesSize(uint32_t a_count);
 SHINY_API int ShinyPrintZonesSize(uint32_t a_count);
@@ -43,10 +43,10 @@ SHINY_API void ShinyPrintNodes(char* output, const ShinyNode *a_root);
 SHINY_API void ShinyPrintZones(char* output, const ShinyZone *a_root);
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 #if __cplusplus
-} // end of extern "C"
+} /* end of extern "C" */
 #include <string>
 
 SHINY_INLINE std::string ShinyNodesToString(const ShinyNode *a_root, uint32_t a_count) {
@@ -63,9 +63,9 @@ SHINY_INLINE std::string ShinyZonesToString(const ShinyZone *a_root, uint32_t a_
 	return str;
 }
 
-extern "C" { // end of c++
+extern "C" { /* end of c++ */
 #endif
 
-#endif // if SHINY_IS_COMPILED == TRUE
+#endif /* if SHINY_IS_COMPILED == TRUE */
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

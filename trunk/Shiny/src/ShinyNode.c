@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 #if SHINY_IS_COMPILED == TRUE
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 ShinyNode _ShinyNode_dummy = {
 	/* _last = */ { 0, 0 },
@@ -43,7 +43,7 @@ ShinyNode _ShinyNode_dummy = {
 };
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyNode_updateTree(ShinyNode* first, float a_damping) {
 	ShinyNodeState *top = NULL;
@@ -66,7 +66,7 @@ void ShinyNode_updateTree(ShinyNode* first, float a_damping) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyNode_updateTreeClean(ShinyNode* first) {
 	ShinyNodeState *top = NULL;
@@ -89,7 +89,7 @@ void ShinyNode_updateTreeClean(ShinyNode* first) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 const ShinyNode* ShinyNode_findNextInTree(const ShinyNode* self) {
 	if (self->firstChild) {
@@ -111,14 +111,14 @@ const ShinyNode* ShinyNode_findNextInTree(const ShinyNode* self) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyNode_clear(ShinyNode* self) {
 	memset(self, 0, sizeof(ShinyNode));
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void ShinyNode_enumerateNodes(const ShinyNode* a_node, void (*a_func)(const ShinyNode*)) {
 	a_func(a_node);

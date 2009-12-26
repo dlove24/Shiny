@@ -46,7 +46,7 @@ extern "C" {
 #endif
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 struct Profile {
 	ShinyZone zone;
@@ -62,14 +62,14 @@ struct Profile {
 typedef HASHMAP<const void*, Profile> ProfileMap;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int is_running = 0;
 
 ProfileMap profiles;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 std::string StringPrintV(const char* format, va_list args) {
 #if (SHINY_COMPILER == SHINY_COMPILER_MSVC)
@@ -92,7 +92,7 @@ std::string StringPrintV(const char* format, va_list args) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 std::string StringPrint(const char* format, ...) {
 	va_list args;
@@ -104,7 +104,7 @@ std::string StringPrint(const char* format, ...) {
 	return str;
 }
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 Profile* FindProfile(lua_State *L, lua_Debug *ar) {
 	const void *func = NULL;
@@ -140,7 +140,7 @@ Profile* FindProfile(lua_State *L, lua_Debug *ar) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 void callhook(lua_State *L, lua_Debug *ar) {
 	// ignore tail call
@@ -150,22 +150,19 @@ void callhook(lua_State *L, lua_Debug *ar) {
 	lua_getinfo(L, "n", ar);
 	if (!ar->name) return;
 
-	switch (ar->event) {
-		case LUA_HOOKCALL:
-			{
-				Profile *prof = FindProfile(L, ar);
-				ShinyManager_lookupAndBeginNode(&Shiny_instance, &prof->cache, &prof->zone);
-				return;
-			}
+	if (ar->even == LUA_HOOKCALL) {
+		Profile *prof = FindProfile(L, ar);
+		ShinyManager_lookupAndBeginNode(&Shiny_instance, &prof->cache, &prof->zone);
+		return;
 
-		case LUA_HOOKRET:
-			ShinyManager_endCurNode(&Shiny_instance);
-			return;
+	} else { // LUA_HOOKRET
+		ShinyManager_endCurNode(&Shiny_instance);
+		return;
 	}
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_update(lua_State *L) {
 	PROFILE_UPDATE();
@@ -173,7 +170,7 @@ int ShinyLua_update(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_clear(lua_State *L) {
 	PROFILE_CLEAR();
@@ -181,7 +178,7 @@ int ShinyLua_clear(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_damping(lua_State *L) {
 	if (lua_gettop(L) == 1) {
@@ -196,7 +193,7 @@ int ShinyLua_damping(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_enabled(lua_State *L) {
 	if (lua_gettop(L) == 1) {
@@ -211,7 +208,7 @@ int ShinyLua_enabled(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_output(lua_State *L) {
 	const char* outfile = NULL;
@@ -225,7 +222,7 @@ int ShinyLua_output(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_treeString(lua_State *L) {
 	lua_pushstring(L, PROFILE_GET_TREE_STRING().c_str());
@@ -233,7 +230,7 @@ int ShinyLua_treeString(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int ShinyLua_flatString(lua_State *L) {
 	lua_pushstring(L, PROFILE_GET_FLAT_STRING().c_str());
@@ -241,7 +238,7 @@ int ShinyLua_flatString(lua_State *L) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 int luaopen_ShinyLua(lua_State *L) {
 	const luaL_reg funcs[] = {

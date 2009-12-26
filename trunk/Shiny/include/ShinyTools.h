@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 #include "ShinyPrereqs.h"
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 typedef struct {
 	float tickFreq;
@@ -36,7 +36,7 @@ typedef struct {
 } ShinyTimeUnit;
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 SHINY_API const ShinyTimeUnit* ShinyGetTimeUnit(float ticks);
 
@@ -46,4 +46,4 @@ SHINY_API shinytick_t ShinyGetTickFreq(void);
 
 SHINY_API float ShinyGetTickInvFreq(void);
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

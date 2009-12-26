@@ -25,7 +25,7 @@ THE SOFTWARE.
 #ifndef SHINY_H
 #define SHINY_H
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,4 +38,4 @@ extern "C" {
 }
 #endif
 
-#endif // ifndef SHINY_*_H
+#endif /* end of include guard */

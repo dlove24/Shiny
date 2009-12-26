@@ -33,12 +33,12 @@ THE SOFTWARE.
 #endif
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 const ShinyTimeUnit* ShinyGetTimeUnit(float ticks) {
 	static ShinyTimeUnit units[4] = { 0 };
 
-	if (units[0].tickFreq == 0) { // auto initialize first time
+	if (units[0].tickFreq == 0) { /* auto initialize first time */
 		units[0].tickFreq = ShinyGetTickFreq() / 1.0f;
 		units[0].invTickFreq = ShinyGetTickInvFreq() * 1.0f;
 		units[0].suffix = "s";
@@ -63,7 +63,7 @@ const ShinyTimeUnit* ShinyGetTimeUnit(float ticks) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 #if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
 
@@ -84,7 +84,7 @@ float ShinyGetTickInvFreq(void) {
 }
 
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 #elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
 
