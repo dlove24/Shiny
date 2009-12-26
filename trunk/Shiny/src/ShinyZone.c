@@ -30,8 +30,6 @@ THE SOFTWARE.
 
 //-----------------------------------------------------------------------------
 
-//TODO: these loops loop for ever - find out why. 
-
 void ShinyZone_preUpdateChain(ShinyZone *first) {
 	ShinyZone* zone = first;
 
@@ -85,93 +83,103 @@ void ShinyZone_resetChain(ShinyZone *first) {
    by Philip J. Erdelsky
    pje@efgh.com
    http://www.alumni.caltech.edu/~pje/
+
+   Modified by Aidin Abedi
 */
 
-ShinyZone* ShinyZone_sortChain(ShinyZone *p)
+ShinyZone* ShinyZone_sortChain(ShinyZone **first) // returns ptr to last zone
 {
-  unsigned base;
-  unsigned long block_size;
+	ShinyZone *p = *first;
 
-  struct tape
-  {
-    ShinyZone *first, *last;
-    unsigned long count;
-  } tape[4];
+	unsigned base;
+	unsigned long block_size;
 
-  /* Distribute the records alternately to tape[0] and tape[1]. */
+	struct tape
+	{
+		ShinyZone *first, *last;
+		unsigned long count;
+	} tape[4];
 
-  tape[0].count = tape[1].count = 0L;
-  tape[0].first = NULL;
-  base = 0;
-  while (p != NULL)
-  {
-    ShinyZone *next = p->next;
-    p->next = tape[base].first;
-    tape[base].first = p;
-    tape[base].count++;
-    p = next;
-    base ^= 1;
-  }
+	/* Distribute the records alternately to tape[0] and tape[1]. */
 
-  /* If the list is empty or contains only a single record, then */
-  /* tape[1].count == 0L and this part is vacuous.               */
+	tape[0].count = tape[1].count = 0L;
+	tape[0].first = NULL;
+	base = 0;
+	while (p != NULL)
+	{
+		ShinyZone *next = p->next;
+		p->next = tape[base].first;
+		tape[base].first = p;
+		tape[base].count++;
+		p = next;
+		base ^= 1;
+	}
 
-  for (base = 0, block_size = 1L; tape[base+1].count != 0L;
-    base ^= 2, block_size <<= 1)
-  {
-    int dest;
-    struct tape *tape0, *tape1;
-    tape0 = tape + base;
-    tape1 = tape + base + 1;
-    dest = base ^ 2;
-    tape[dest].count = tape[dest+1].count = 0;
-    for (; tape0->count != 0; dest ^= 1)
-    {
-      unsigned long n0, n1;
-      struct tape *output_tape = tape + dest;
-      n0 = n1 = block_size;
-      while (1)
-      {
-        ShinyZone *chosen_record;
-        struct tape *chosen_tape;
-        if (n0 == 0 || tape0->count == 0)
-        {
-          if (n1 == 0 || tape1->count == 0)
-            break;
-          chosen_tape = tape1;
-          n1--;
-        }
-        else if (n1 == 0 || tape1->count == 0)
-        {
-          chosen_tape = tape0;
-          n0--;
-        }
-        else if (ShinyZone_compare(tape0->first, tape1->first) > 0)
-        {
-          chosen_tape = tape1;
-          n1--;
-        }
-        else
-        {
-          chosen_tape = tape0;
-          n0--;
-        }
-        chosen_tape->count--;
-        chosen_record = chosen_tape->first;
-        chosen_tape->first = chosen_record->next;
-        if (output_tape->count == 0)
-          output_tape->first = chosen_record;
-        else
-          output_tape->last->next = chosen_record;
-        output_tape->last = chosen_record;
-        output_tape->count++;
-      }
-    }
-  }
+	/* If the list is empty or contains only a single record, then */
+	/* tape[1].count == 0L and this part is vacuous.               */
 
-  if (tape[base].count > 1L)
-    tape[base].last->next = NULL;
-  return tape[base].first;
+	for (base = 0, block_size = 1L; tape[base+1].count != 0L;
+		base ^= 2, block_size <<= 1)
+	{
+		int dest;
+		struct tape *tape0, *tape1;
+		tape0 = tape + base;
+		tape1 = tape + base + 1;
+		dest = base ^ 2;
+		tape[dest].count = tape[dest+1].count = 0;
+		for (; tape0->count != 0; dest ^= 1)
+		{
+			unsigned long n0, n1;
+			struct tape *output_tape = tape + dest;
+			n0 = n1 = block_size;
+			while (1)
+			{
+				ShinyZone *chosen_record;
+				struct tape *chosen_tape;
+				if (n0 == 0 || tape0->count == 0)
+				{
+					if (n1 == 0 || tape1->count == 0)
+						break;
+					chosen_tape = tape1;
+					n1--;
+				}
+				else if (n1 == 0 || tape1->count == 0)
+				{
+					chosen_tape = tape0;
+					n0--;
+				}
+				else if (ShinyZone_compare(tape1->first, tape0->first) > 0)
+				{
+					chosen_tape = tape1;
+					n1--;
+				}
+				else
+				{
+					chosen_tape = tape0;
+					n0--;
+				}
+				chosen_tape->count--;
+				chosen_record = chosen_tape->first;
+				chosen_tape->first = chosen_record->next;
+				if (output_tape->count == 0)
+					output_tape->first = chosen_record;
+				else
+					output_tape->last->next = chosen_record;
+				output_tape->last = chosen_record;
+				output_tape->count++;
+			}
+		}
+	}
+
+	if (tape[base].count > 1L) {
+		ShinyZone* last = tape[base].last;
+		*first = tape[base].first;
+		last->next = NULL;
+		return last;
+
+	} else {
+		return NULL;
+	}
 }
 
 

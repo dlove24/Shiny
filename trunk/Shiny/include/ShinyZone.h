@@ -66,7 +66,7 @@ SHINY_API void ShinyZone_updateChainClean(ShinyZone *first);
 
 SHINY_API void ShinyZone_resetChain(ShinyZone *first);
 
-SHINY_API ShinyZone* ShinyZone_sortChain(ShinyZone *first);
+SHINY_API ShinyZone* ShinyZone_sortChain(ShinyZone **first);
 
 SHINY_INLINE float ShinyZone_compare(ShinyZone *a, ShinyZone *b) {
 	return a->data.selfTicks.avg - b->data.selfTicks.avg;

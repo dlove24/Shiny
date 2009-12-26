@@ -123,12 +123,12 @@ SHINY_INLINE void _ShinyManager_uninit(ShinyManager *self) {
 #if SHINY_LOOKUP_RATE == TRUE
 SHINY_INLINE void _ShinyManager_incLookup(ShinyManager *self) { self->_lookupCount++; }
 SHINY_INLINE void _ShinyManager_incLookupSuccess(ShinyManager *self) { self->_lookupSuccessCount++; }
-SHINY_INLINE float ShinyManager_getLookupRate(const ShinyManager *self) { return ((float) self->_lookupSuccessCount) / ((float) self->_lookupCount); }
+SHINY_INLINE float ShinyManager_lookupRate(const ShinyManager *self) { return ((float) self->_lookupSuccessCount) / ((float) self->_lookupCount); }
 
 #else
 SHINY_INLINE void _ShinyManager_incLookup(ShinyManager *self) {}
 SHINY_INLINE void _ShinyManager_incLookupSuccess(ShinyManager *self) {}
-SHINY_INLINE float ShinyManager_getLookupRate(const ShinyManager *self) { return -1; }
+SHINY_INLINE float ShinyManager_lookupRate(const ShinyManager *self) { return -1; }
 #endif
 
 SHINY_API void ShinyManager_resetZones(ShinyManager *self);
@@ -182,7 +182,7 @@ SHINY_API void ShinyManager_destroy(ShinyManager *self);
 
 SHINY_INLINE void ShinyManager_sortZones(ShinyManager *self) {
 	if (self->rootZone.next)
-		self->rootZone.next = ShinyZone_sortChain(self->rootZone.next);
+		self->_lastZone = ShinyZone_sortChain(&self->rootZone.next);
 }
 
 SHINY_API const char* ShinyManager_getOutputErrorString(ShinyManager *self);

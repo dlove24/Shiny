@@ -107,30 +107,30 @@ std::string StringPrint(const char* format, ...) {
 //-----------------------------------------------------------------------------
 
 Profile* FindProfile(lua_State *L, lua_Debug *ar) {
-	const void *key;
+	const void *func = NULL;
 
 	lua_getinfo(L, "f", ar);
-	key = lua_topointer(L, -1);
+	func = lua_topointer(L, -1);
 	lua_pop(L, 1);
 
-	Profile *prof = &profiles[key];
+	Profile *prof = &profiles[func];
 
 	if (!prof->zone.name) {
-		lua_getinfo(L, "nS", ar);
-		if (!ar->name) return NULL; // ignore tail calls 
+		lua_getinfo(L, "S", ar);
 
 		switch (ar->what[0]) {
-			case 'C': /* 'C' */
-				prof->name = ar->name;
+			case 'L': // "Lua"
+				prof->name =
+					StringPrint("%s(%d):%s", ar->source, ar->linedefined, ar->name);
 				break;
 
-			case 'm': /* 'main' */
-				prof->name = ar->source;
+			case 'C': // "C"
+				prof->name = "C:";
+				prof->name += ar->name;
 				break;
-				
-			default: /* 'Lua' */
-				prof->name = StringPrint("%s(%d):%s",
-					ar->source, ar->linedefined, ar->name);
+
+			default: // impossible happened
+				prof->name = "<unknown>";
 		}
 
 		prof->zone.name = prof->name.c_str();
@@ -143,6 +143,13 @@ Profile* FindProfile(lua_State *L, lua_Debug *ar) {
 //-----------------------------------------------------------------------------
 
 void callhook(lua_State *L, lua_Debug *ar) {
+	// ignore tail call
+	if (ar->i_ci == 0 || ar->event == LUA_HOOKTAILRET) return;
+
+	// ignore nameless function
+	lua_getinfo(L, "n", ar);
+	if (!ar->name) return;
+
 	switch (ar->event) {
 		case LUA_HOOKCALL:
 			{
@@ -153,9 +160,6 @@ void callhook(lua_State *L, lua_Debug *ar) {
 
 		case LUA_HOOKRET:
 			ShinyManager_endCurNode(&Shiny_instance);
-			return;
-
-		default:
 			return;
 	}
 }
