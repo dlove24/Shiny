@@ -196,7 +196,7 @@ int ShinyLua_damping(lua_State *L) {
 /*---------------------------------------------------------------------------*/
 
 int ShinyLua_start(lua_State *L) {
-	if (is_running) return;
+	if (is_running) return 0;
 	is_running = 1;
 	lua_sethook(L, callhook, LUA_MASKCALL | LUA_MASKRET, 0);
 	return 0;
@@ -206,7 +206,7 @@ int ShinyLua_start(lua_State *L) {
 /*---------------------------------------------------------------------------*/
 
 int ShinyLua_stop(lua_State *L) {
-	if (!is_running) return;
+	if (!is_running) return 0;
 	is_running = 0;
 	lua_sethook(L, callhook, 0, 0);
 	return 0;
