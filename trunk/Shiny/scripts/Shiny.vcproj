@@ -198,10 +198,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\ShinyDoc.h"
-				>
-			</File>
-			<File
 				RelativePath="..\include\ShinyMacros.h"
 				>
 			</File>

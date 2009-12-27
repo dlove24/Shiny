@@ -36,8 +36,8 @@ THE SOFTWARE.
 #define PROFILE_UPDATE()													\
 	ShinyManager_update(&Shiny_instance)
 
-#define PROFILE_SET_DAMPING(from0to1)										\
-	Shiny_instance.damping = (from0to1);
+#define PROFILE_SET_DAMPING(floatfrom0to1)									\
+	Shiny_instance.damping = (floatfrom0to1);
 
 #define PROFILE_GET_DAMPING()												\
 	(Shiny_instance.damping)
@@ -103,13 +103,13 @@ THE SOFTWARE.
 /*---------------------------------------------------------------------------*/
 /* public preprocessors */
 
-#define PROFILE_WATCH_SHARED_SELF(name, from0to1)							\
-	ShinyManager_isSelfZoneGreaterEqual(									\
-		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), from0to1)
+#define PROFILE_IS_SHARED_SELF_BELOW(name, floatfrom0to1)					\
+	ShinyManager_isZoneSelfTimeBelow(										\
+		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), floatfrom0to1)
 
-#define PROFILE_WATCH_SHARED_TOTAL(name, from0to1)							\
-	ShinyManager_isTotalZoneGreaterEqual(									\
-		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), from0to1)
+#define PROFILE_IS_SHARED_TOTAL_BELOW(name, floatfrom0to1)					\
+	ShinyManager_isZoneTotalTimeBelow(										\
+		&Shiny_instance, _PROFILE_ID_ZONE_SHARED(name), floatfrom0to1)
 
 
 /*---------------------------------------------------------------------------*/
