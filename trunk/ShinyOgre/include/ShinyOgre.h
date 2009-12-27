@@ -22,29 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#ifndef SHINY_LUA_H
-#define SHINY_LUA_H
-
-#include "Shiny.h"
-
+#ifndef SHINY_OGRE_H
+#define SHINY_OGRE_H
 
 /*---------------------------------------------------------------------------*/
 
-typedef struct lua_State lua_State;
-
-extern "C" {
-
-	SHINY_EXPORT int luaopen_ShinyLua(lua_State *L);
-
-	SHINY_EXPORT int ShinyLua_update(lua_State *L);
-	SHINY_EXPORT int ShinyLua_clear(lua_State *L);
-	SHINY_EXPORT int ShinyLua_damping(lua_State *L);
-	SHINY_EXPORT int ShinyLua_start(lua_State *L);
-	SHINY_EXPORT int ShinyLua_stop(lua_State *L);
-	SHINY_EXPORT int ShinyLua_is_running(lua_State *L);
-	SHINY_EXPORT int ShinyLua_output(lua_State *L);
-	SHINY_EXPORT int ShinyLua_tree_string(lua_State *L);
-	SHINY_EXPORT int ShinyLua_flat_string(lua_State *L);
-}
+#include "Shiny.h"
 
 #endif /* end of include guard */

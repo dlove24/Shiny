@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShinyLua", "ShinyLua\script
 		{D44CCFEB-7FC2-46E6-8290-E0B00D06A636} = {D44CCFEB-7FC2-46E6-8290-E0B00D06A636}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShinyOgre", "ShinyOgre\scripts\ShinyOgre.vcproj", "{EA9DF009-6BE9-45E0-BA70-50298835E6EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -49,6 +51,10 @@ Global
 		{98E8A575-2BDC-4A8C-8917-6BFF1EC660E8}.Debug|Win32.Build.0 = Debug|Win32
 		{98E8A575-2BDC-4A8C-8917-6BFF1EC660E8}.Release|Win32.ActiveCfg = Release|Win32
 		{98E8A575-2BDC-4A8C-8917-6BFF1EC660E8}.Release|Win32.Build.0 = Release|Win32
+		{EA9DF009-6BE9-45E0-BA70-50298835E6EC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EA9DF009-6BE9-45E0-BA70-50298835E6EC}.Debug|Win32.Build.0 = Debug|Win32
+		{EA9DF009-6BE9-45E0-BA70-50298835E6EC}.Release|Win32.ActiveCfg = Release|Win32
+		{EA9DF009-6BE9-45E0-BA70-50298835E6EC}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
