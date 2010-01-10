@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) 2007-2009 Aidin Abedi http://code.google.com/p/shinyprofiler/
+Copyright (c) 2007-2010 Aidin Abedi http://code.google.com/p/shinyprofiler/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

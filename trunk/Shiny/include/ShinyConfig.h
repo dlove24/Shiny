@@ -1,7 +1,7 @@
 /*
 The MIT License
 
-Copyright (c) 2007-2009 Aidin Abedi http://code.google.com/p/shinyprofiler/
+Copyright (c) 2007-2010 Aidin Abedi http://code.google.com/p/shinyprofiler/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,6 @@ THE SOFTWARE.
 
 #ifndef SHINY_CONFIG_H
 #define SHINY_CONFIG_H
-
-
-/*---------------------------------------------------------------------------*/
-
-#define SHINY_VERSION			"2.5"
-#define SHINY_SHORTNAME			"Shiny"
-#define SHINY_FULLNAME			"Shiny Profiler"
-#define SHINY_COPYRIGHT			"Copyright (C) 2007-2009 Aidin Abedi"
-#define SHINY_DESCRIPTION		"Shiny is a elegent profiler designed to help finding bottlenecks in your project."
 
 
 /*---------------------------------------------------------------------------*/
@@ -77,51 +68,6 @@ THE SOFTWARE.
  */
 #ifndef SHINY_OUTPUT_MODE
 #define SHINY_OUTPUT_MODE		SHINY_OUTPUT_MODE_BOTH
-#endif
-
-
-/*---------------------------------------------------------------------------*/
-
-#ifndef FALSE
-#define FALSE	0x0
-#endif
-
-#ifndef TRUE
-#define TRUE	0x1
-#endif
-
-#ifndef NULL
-#define NULL	0
-#endif
-
-
-/*---------------------------------------------------------------------------*/
-
-#define SHINY_PLATFORM_WIN32	0x1
-#define SHINY_PLATFORM_POSIX	0x2
-
-#if defined (_WIN32)
-#   define SHINY_PLATFORM	SHINY_PLATFORM_WIN32
-
-#else /* ASSUME: POSIX-compliant OS */
-#   define SHINY_PLATFORM	SHINY_PLATFORM_POSIX
-#endif
-
-
-/*---------------------------------------------------------------------------*/
-
-#define SHINY_COMPILER_MSVC		0x1
-#define SHINY_COMPILER_GNUC		0x2
-#define SHINY_COMPILER_OTHER	0x3
-
-#if defined (_MSC_VER)
-#   define SHINY_COMPILER	SHINY_COMPILER_MSVC
-
-#elif defined (__GNUG__)
-#   define SHINY_COMPILER	SHINY_COMPILER_GNUC
-
-#else
-#   define SHINY_COMPILER	SHINY_COMPILER_OTHER
 #endif
 
 #endif /* end of include guard */
