@@ -154,6 +154,22 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\src\HistoryGraph.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\Profiler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\ProfilerGraph.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\ProfilerOutput.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\ShinyOgre.cpp"
 				>
 			</File>
@@ -163,6 +179,22 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\include\HistoryGraph.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\Profiler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ProfilerGraph.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ProfilerOutput.h"
+				>
+			</File>
 			<File
 				RelativePath="..\include\ShinyOgre.h"
 				>
