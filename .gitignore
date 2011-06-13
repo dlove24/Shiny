@@ -8,6 +8,7 @@ CMakeFiles/
 _t_.spec
 cmake_install.cmake
 install_manifest.txt
+Makefile
 
 # CMake Project config file
 lib/config/config.h
