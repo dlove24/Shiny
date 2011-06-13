@@ -25,6 +25,32 @@ THE SOFTWARE.
 #ifndef SHINY_CONFIG_H
 #define SHINY_CONFIG_H
 
+/* Include the CMake configure file. This sets up the headers, and does
+ * the header/platform detection for us
+ */
+
+#include "config.h"
+#include <sys/types.h>
+
+/* Look for the C99 integer types */
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#else
+# error "Cannot build Shiny on this platform: The C99 integer types are undefined"
+#endif
+
+/* Look for the header files defining the constants for type lengths */
+#ifdef HAVE_VALUES_H
+# include <values.h>
+#endif
+
+#ifdef HAVE_FLOAT_H
+# include <float.h>
+#endif
+
+#ifdef HAVE_LIMITS_H
+# include <limits.h>
+#endif
 
 /*---------------------------------------------------------------------------*/
 

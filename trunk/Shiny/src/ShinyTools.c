@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#include "config.h"
 #include "ShinyTools.h"
 
 #if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
@@ -29,7 +30,21 @@ THE SOFTWARE.
 #include <windows.h>
 
 #elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
-#include <sys/time.h>
+#
+# ifdef TIME_IN_SYS_RESOURCE
+#  include <sys/resource.h>
+# endif
+# ifdef TIME_IN_SYS_TIME
+#  include <sys/time.h>
+# endif
+#
+# ifdef GETTIMEOFDAY_IN_SYS_TIME
+#  include <sys/time.h>
+# endif
+# ifdef GETTIMEOFDAY_IN_TIME
+#  include <time.h>
+# endif
+#
 #endif
 
 
@@ -89,13 +104,13 @@ float ShinyGetTickInvFreq(void) {
 #elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
 
 void ShinyGetTicks(shinytick_t *p) {
-	timeval time;
+	struct timeval time;
 	gettimeofday(&time, NULL);
 
 	*p = time.tv_sec * 1000000 + time.tv_usec;
 }
 
-const shinytick_t& ShinyGetTickFreq(void) {
+shinytick_t ShinyGetTickFreq(void) {
 	return 1000000;
 }
 
