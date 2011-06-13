@@ -1,0 +1,98 @@
+/**
+*** Copyright (c) 2011 David Love <david@homeunix.org.uk>
+***
+*** Permission to use, copy, modify, and/or distribute this software for any
+*** purpose with or without fee is hereby granted, provided that the above
+*** copyright notice and this permission notice appear in all copies.
+***
+*** THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+*** WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+*** MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+*** ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+*** WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+*** ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+*** OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+***
+*** \file config.h
+*** \brief Provides defines for platform, compiler and header options from CMake
+***
+*** \author David Love
+*** \date June 2011
+**/
+
+/**
+*** Platform Checks
+**/
+
+/* Look for the machine type on Apple platforms at compile (not configure). Apple platforms
+** allow multiple architectures to exit simultaneously, so we can't check at configure
+**
+** See: http://www.cmake.org/pipermail/cmake/2009-June/030126.html
+**/
+
+#if defined(__APPLE__)
+#  if defined(__i386__)
+#    undef HAVE_64_BIT
+#    undef HAVE_BIG_ENDIAN
+#  elif defined(__ppc__)
+#    undef HAVE_64_BIT
+#    define HAVE_BIG_ENDIAN
+#  elif defined(__x86_64__)
+#    define HAVE_64_BIT
+#    undef HAVE_BIG_ENDIAN
+#  elif defined(__ppc64__)
+#    define HAVE_64_BIT
+#    define HAVE_BIG_ENDIAN
+#  else
+      // oops
+#    error "Unknown architecture!"
+#  endif
+#else
+#cmakedefine HAVE_64_BIT
+#cmakedefine HAVE_BIG_ENDIAN
+#endif
+
+/**
+*** Function Declarations
+**/
+
+/* Look for the vsnprintf function, used by the bstring library */
+#cmakedefine BSTRLIB_VSNP_OK 1
+
+/**
+*** Header Declarations
+**/
+
+/* Look for assertions */
+#cmakedefine HAVE_ASSERT_H 1
+
+/* Look for the C99 declaration of the standard types */
+#cmakedefine HAVE_STDINT_H 1
+
+/* Look for the C99 integer types: needed for UUIDs amongst others */
+#cmakedefine HAVE_INTTYPES_H 1
+
+/* Look for the header files defining the constants for type lengths */
+#cmakedefine HAVE_VALUES_H 1
+#cmakedefine HAVE_FLOAT_H 1
+#cmakedefine HAVE_LIMITS_H 1
+
+/**
+*** Function Declarations
+**/
+
+#cmakedefine TIME_IN_SYS_RESOURCE 1
+#cmakedefine TIME_IN_SYS_TIME 1
+
+#cmakedefine GETTIMEOFDAY_IN_SYS_TIME
+#cmakedefine GETTIMEOFDAY_IN_TIME
+
+/**
+*** Library Constants
+**/
+
+/* YAML Library */
+#define YAML_VERSION_MAJOR 0
+#define YAML_VERSION_MINOR 1
+#define YAML_VERSION_PATCH 4
+#define YAML_VERSION_STRING "0.1.4"
