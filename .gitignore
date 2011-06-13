@@ -1,0 +1,61 @@
+##
+## Build Directories/Files
+##
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+_t_.spec
+cmake_install.cmake
+install_manifest.txt
+
+# CMake Project config file
+lib/config/config.h
+
+# CTest
+Testing/
+CTestTestfile.cmake
+
+# Lua
+tapeworm
+tapeworm.c
+
+# C
+*.a
+*.so
+
+##
+## Directories generated/curated by Ruby Gems
+##
+
+# rcov generated
+coverage
+
+# rdoc generated
+rdoc
+
+# yard generated
+doc
+.yardoc
+
+# bundler
+.bundle
+
+# jeweler generated
+pkg
+
+##
+## Old code file after re-style
+##
+*.orig
+
+##
+## Editor Files
+##
+
+# TextMate
+*.tmproj
+tmtags
+
+# vim
+*.swp
