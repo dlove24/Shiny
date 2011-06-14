@@ -68,7 +68,7 @@ endif ( MSVC OR MSVC_IDE OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR CMAKE_COMPIL
 if ( ${CMAKE_COMPILER_IS_GNUCC} ) 
   message ( "-- Using GCC compiler profile...")
 
-	set ( SHINY_INLINE extern\ inline )
+	set ( SHINY_INLINE __inline__ )
 	set ( SHINY_UNUSED __attribute__\(\(unused\)\) )
 	set ( SHINY_EXPORT __attribute__\(\(dllexport\)\) )
 endif ( ${CMAKE_COMPILER_IS_GNUCC} ) 
@@ -201,3 +201,13 @@ add_library ( shiny
 	trunk/Shiny/src/ShinyTools.c
 	trunk/Shiny/src/ShinyZone.c 
 	)
+	
+##
+
+#link_directories (${CMAKE_CURRENT_SOURCE_DIR}) 
+
+add_executable ( shiny-simple 
+	trunk/Samples/Simple/Simple.cpp
+	)
+	
+target_link_libraries (shiny-simple shiny) 
