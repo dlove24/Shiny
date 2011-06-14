@@ -25,8 +25,10 @@ THE SOFTWARE.
 #ifndef SHINY_PREREQS_H
 #define SHINY_PREREQS_H
 
-#include "ShinyConfig.h"
-#include "ShinyVersion.h"
+/* Include the CMake configure file. This sets up the headers, and does
+ * the header/platform detection for us
+ */
+#include "config.h"
 
 
 /*---------------------------------------------------------------------------*/

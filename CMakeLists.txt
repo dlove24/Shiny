@@ -70,7 +70,7 @@ endif ( "${CMAKE_C_COMPILER_ID}" MATCHES "Clang" )
 ##
 
 # Set the global configure file
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config.h )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config_cmake.h )
 
 # Add the global configure file to the search path
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/lib/config )
@@ -136,10 +136,18 @@ if ( NOT APPLE )
 endif ( NOT APPLE )
 
 ##
-## C Application Sources
+## C Library Sources
 ##
 
 # Add the Shiny header files to the search path
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/trunk/Shiny/include )
 
-add_executable ( shiny_tools trunk/Shiny/src/ShinyTools.c )
+add_library ( shiny
+	trunk/Shiny/src/ShinyManager.c
+	trunk/Shiny/src/ShinyNode.c
+	trunk/Shiny/src/ShinyNodePool.c
+	trunk/Shiny/src/ShinyNodeState.c
+	trunk/Shiny/src/ShinyOutput.c
+	trunk/Shiny/src/ShinyTools.c
+	trunk/Shiny/src/ShinyZone.c 
+	)
