@@ -22,45 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#ifndef SHINY_PREREQS_H
-#define SHINY_PREREQS_H
+#ifndef CONFIG_DEFINE_H
+#define CONFIG_DEFINE_H
 
-/* Include the CMake configure file. This sets up the headers, and does
- * the header/platform detection for us
- */
-#include "config.h"
-
-
-/*---------------------------------------------------------------------------*/
-
-#define SHINY_PLATFORM_WIN32	0x1
-#define SHINY_PLATFORM_POSIX	0x2
-
-#if defined (_WIN32)
-#   define SHINY_PLATFORM	SHINY_PLATFORM_WIN32
-
-#else /* ASSUME: POSIX-compliant OS */
-#   define SHINY_PLATFORM	SHINY_PLATFORM_POSIX
-#endif
-
+/**
+*** \note This file should be kept as small as possible: if it doesn't depend
+***       on the platform, it probably doesn't belong in here.
+***
+***/
 
 /*---------------------------------------------------------------------------*/
-
-#define SHINY_COMPILER_MSVC		0x1
-#define SHINY_COMPILER_GNUC		0x2
-#define SHINY_COMPILER_OTHER	0x3
-
-#if defined (_MSC_VER)
-#   define SHINY_COMPILER	SHINY_COMPILER_MSVC
-
-#elif defined (__GNUG__)
-#   define SHINY_COMPILER	SHINY_COMPILER_GNUC
-
-#else
-#   define SHINY_COMPILER	SHINY_COMPILER_OTHER
-#endif
-
-
+/*																																					 */
+/*  Constants. Usually defined by the platform, but otherwise here					 */
+/*																																					 */
 /*---------------------------------------------------------------------------*/
 
 #ifndef FALSE
@@ -75,26 +49,10 @@ THE SOFTWARE.
 #define NULL	0
 #endif
 
-
 /*---------------------------------------------------------------------------*/
-
-#if SHINY_COMPILER == SHINY_COMPILER_GNUC
-#include <sys/types.h>
-#include <stdint.h>
-#endif
-
-
-/*---------------------------------------------------------------------------*/
-
-#if SHINY_IS_COMPILED == TRUE
-	struct _ShinyNode;
-	struct _ShinyZone;
-
-	typedef struct _ShinyNode* ShinyNodeCache;
-	typedef struct _ShinyNode* ShinyNodeTable;
-#endif
-
-
+/*																																					 */
+/*  Additional Defines					 																						 */
+/*																																					 */
 /*---------------------------------------------------------------------------*/
 
 #if SHINY_STATIC_LINK == TRUE
@@ -103,42 +61,39 @@ THE SOFTWARE.
 #	define SHINY_API	SHINY_EXPORT
 #endif
 
-
+/*---------------------------------------------------------------------------*/
+/*																																					 */
+/*  Structures used by Shiny					 																			 */
+/*																																					 */
 /*---------------------------------------------------------------------------*/
 
-#if SHINY_COMPILER == SHINY_COMPILER_MSVC
-#	define SHINY_INLINE		__inline
-#	define SHINY_UNUSED
-#	define SHINY_EXPORT		__declspec(dllexport)
-
-#elif SHINY_COMPILER == SHINY_COMPILER_GNUC
-#	define SHINY_INLINE		inline
-#	define SHINY_UNUSED		__attribute__((unused))
-#	define SHINY_EXPORT		__attribute__((dllexport))
-
-#elif SHINY_COMPILER == SHINY_COMPILER_OTHER
-#	define SHINY_INLINE		inline
-#	define SHINY_UNUSED
-#	define SHINY_EXPORT		extern
+#if SHINY_IS_COMPILED == TRUE
+	struct _ShinyNode;
+	struct _ShinyZone;
 #endif
-
 
 /*---------------------------------------------------------------------------*/
+/*																																					 */
+/*  Typedefs used by Shiny					 																			   */
+/*																																					 */
+/*---------------------------------------------------------------------------*/
 
-#if SHINY_COMPILER == SHINY_COMPILER_MSVC
-	typedef int					int32_t;
-	typedef unsigned int		uint32_t;
-
-	typedef __int64				int64_t;
-	typedef unsigned __int64	uint64_t;
-
-/*
-#elif defined(__CYGWIN__)
-	typedef u_int32_t			uint32_t;
-	typedef u_int64_t			uint64_t;
-*/
+#if SHINY_IS_COMPILED == TRUE
+	typedef struct _ShinyNode* ShinyNodeCache;
+	typedef struct _ShinyNode* ShinyNodeTable;
 #endif
 
-	typedef uint64_t			shinytick_t;
+#if PLATFORM_TYPE == PLATFORM_TYPE_WINDOWS
+	/* Use the configured symbols in place of the standard ones, but set a
+	 * typedef so we don't have to care
+	 */
+	typedef INT32_T		int32_t;
+	typedef UINT32_T	uint32_t;
 
-#endif /* end of include guard */
+	typedef INT64_T		int64_t;
+	typedef UINT64_T	uint64_t;
+#endif
+
+typedef uint64_t			shinytick_t;
+
+#endif /* CONFIG_DEFINE_H */

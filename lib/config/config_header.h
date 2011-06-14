@@ -31,6 +31,15 @@
 #define CONFIG_HEADER_H
 
 /**
+*** Platform Includes: Core header files required by certain platforms
+**/
+
+#if PLATFORM_TYPE == PLATFORM_TYPE_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
+/**
 *** Header Includes: these are conditional, based on the results of the
 **  								 header checks above
 **/
@@ -53,6 +62,12 @@
 
 #ifdef HAVE_LIMITS_H
 # include <limits.h>
+#endif
+
+#ifdef EXPLICIT_MALLOC_H
+# include <malloc.h>
+#else
+# include <stdlib.h>
 #endif
 
 #endif /* CONFIG_HEADER_H */

@@ -45,11 +45,32 @@ include ( cmake/extra/CheckPrototypeDefinition.cmake )
 ## Compiler Configuration
 ##
 
-# Enforce ANSI mode on GCC compilers
+# Microsoft compilers
+if ( MSVC OR MSVC_IDE OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR CMAKE_COMPILER_2005 OR MSVC90 OR MSVC10 )
+	# Define the export symbols
+	set ( SHINY_INLINE inline )
+	set ( SHINY_UNUSED  )
+	set ( SHINY_EXPORT __declspec\(dllexport\) )
+	
+	# Define the standard integer types
+	if ( CYGWIN )
+		set ( UINT32_T	u_int32_t 		 	 )
+		set ( UINT64_T 	u_int64_t 			 )
+	else ( CYGWIN )
+		set ( INT32_T 	int					 		 )
+		set ( UINT32_T	unsigned int 		 )
+		set ( INT64_T		__int64			 		 )
+		set ( UINT64_T 	unsigned __int64 )
+	endif ( CYGWIN )
+endif ( MSVC OR MSVC_IDE OR MSVC60 OR MSVC70 OR MSVC71 OR MSVC80 OR CMAKE_COMPILER_2005 OR MSVC90 OR MSVC10 )
+
+# GNU Compiler
 if ( ${CMAKE_COMPILER_IS_GNUCC} ) 
   message ( "-- Using GCC compiler profile...")
-  # Force ANSI C (C89/C90) mode
-  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi -pedantic -Wall -Wextra" )
+
+	set ( SHINY_INLINE extern\ inline )
+	set ( SHINY_UNUSED __attribute__\(\(unused\)\) )
+	set ( SHINY_EXPORT __attribute__\(\(dllexport\)\) )
 endif ( ${CMAKE_COMPILER_IS_GNUCC} ) 
 
 # Check for CLang (this should be redundant eventually, as a patch
@@ -61,32 +82,20 @@ endif ( ${CMAKE_COMPILER_IS_GNUCC} )
 # away..
 if ( "${CMAKE_C_COMPILER_ID}" MATCHES "Clang" )
   message ( "-- Using Clang compiler profile...")
-  # Force ANSI C (C89/C90) mode
-  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi -pedantic -Wall -Wextra" )
+
 endif ( "${CMAKE_C_COMPILER_ID}" MATCHES "Clang" )
 
 ##
 ## Project Configuration
 ##
 
-# Set the global configure file
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config_cmake.h )
-
 # Add the global configure file to the search path
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/lib/config )
 
-# Look for the math library: on some platforms this is part of the C
-# library, on others it needs linking separately
-check_library_exists ( m floor "" SEPARATE_LIB_M ) 
+##
+## Header File Configuration
+##
 
-if ( SEPARATE_LIB_M )
-  # If the math library is separate, then it needs to be included
-  # in the global link flags
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lm")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -lm")
-endif( SEPARATE_LIB_M )
- 
 # Look for the "assert.h" header file
 check_include_files ( assert.h HAVE_ASSERT_H )
 
@@ -101,6 +110,25 @@ check_include_files ( values.h HAVE_VALUES_H )
 check_include_files ( float.h HAVE_FLOAT_H )
 check_include_files ( limits.h HAVE_LIMITS_H )
 
+# Look for a separate malloc header
+check_include_files ( malloc.h EXPLICIT_MALLOC_H )
+
+##
+## Library Configuration
+##
+
+# Look for the math library: on some platforms this is part of the C
+# library, on others it needs linking separately
+check_library_exists ( m floor "" SEPARATE_LIB_M ) 
+
+if ( SEPARATE_LIB_M )
+  # If the math library is separate, then it needs to be included
+  # in the global link flags
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lm")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -lm")
+endif( SEPARATE_LIB_M )
+
 # Work out where timeval lives
 set ( CMAKE_EXTRA_INCLUDE_FILES sys/resource.h )
 	check_type_size( "struct timeval" TIME_IN_SYS_RESOURCE )
@@ -113,6 +141,21 @@ set ( CMAKE_EXTRA_INCLUDE_FILES )
 # Work out where gettimeofday lives
 check_prototype_definition ( gettimeofday "int gettimeofday(struct timeval *restrict tp, void *restrict tzp)" "NULL" "sys/time.h" GETTIMEOFDAY_IN_SYS_TIME ) 
 check_prototype_definition ( gettimeofday "int gettimeofday(struct timeval *restrict tp, void *restrict tzp)" "NULL" "time.h" GETTIMEOFDAY_IN_TIME )
+
+##
+## Platform Configuration
+##
+
+# Look for the main platform types
+
+if ( UNIX )
+	set ( PLATFORM_TYPE 0x02 )
+	message ( "UNIX" )
+endif ( UNIX )
+
+if ( WIN32 )
+	set ( PLATFORM_TYPE 0x01 )
+endif ( WIN32 )
 
 # Check whether we are on a 32-bit or a 64-bit platform for non-Apple
 # platforms: Apple platforms have to be checked at compile time
@@ -134,6 +177,13 @@ if ( NOT APPLE )
      set ( HAVE_BIG_ENDIAN 0 )
    endif ( HAVE_BIG_ENDIAN )
 endif ( NOT APPLE )
+
+##
+## Core Configuration File
+##
+
+# Set the global configure file
+configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/lib/config/config_cmake.h )
 
 ##
 ## C Library Sources

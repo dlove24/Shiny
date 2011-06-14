@@ -31,6 +31,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/* Include the configuration knobs: these must be included first
+** as they may affect the behaviour of the following configure files
+**/
+#include "config_knobs.h"
+
 /* Include the platform checks from CMake */
 #include "config_cmake.h"
 

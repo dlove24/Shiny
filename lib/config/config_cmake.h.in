@@ -35,7 +35,15 @@
 *** Platform Checks
 **/
 
-/* Look for the machine type on Apple platforms at compile (not configure). Apple platforms
+/* Core platform type */
+#define WINDOWS	0x01
+#define POSIX 	0x02
+
+#cmakedefine PLATFORM_TYPE @PLATFORM_TYPE@
+
+/* Bit Range and Endian checks
+**
+** Look for the machine type on Apple platforms at compile (not configure). Apple platforms
 ** allow multiple architectures to exit simultaneously, so we can't check at configure
 **
 ** See: http://www.cmake.org/pipermail/cmake/2009-June/030126.html
@@ -64,6 +72,21 @@
 #endif
 
 /**
+*** Complier Checks
+**/
+
+/* Define the compiler specific prefix for function call protocol and library attributes */
+#cmakedefine SHINY_INLINE @SHINY_INLINE@
+#cmakedefine SHINY_UNUSED @SHINY_UNUSED@
+#cmakedefine SHINY_EXPORT @SHINY_EXPORT@
+
+/* Define the symbols used as the standard integer types */
+#cmakedefine INT32_T 	@INT32_T@
+#cmakedefine UINT32_T	@UINT32_T@
+#cmakedefine INT64_T	@INT64_T@
+#cmakedefine UINT64_T	@UINT64_T@
+
+/**
 *** Header Checks
 **/
 
@@ -80,6 +103,9 @@
 #cmakedefine HAVE_VALUES_H 1
 #cmakedefine HAVE_FLOAT_H 1
 #cmakedefine HAVE_LIMITS_H 1
+
+/* Look for a separate malloc header */
+#cmakedefine EXPLICIT_MALLOC_H 1
 
 /**
 *** Function Checks

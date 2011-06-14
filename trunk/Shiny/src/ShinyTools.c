@@ -25,15 +25,6 @@ THE SOFTWARE.
 #include "config.h"
 #include "ShinyTools.h"
 
-#if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-#elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
-#
-#endif
-
-
 /*---------------------------------------------------------------------------*/
 
 const ShinyTimeUnit* ShinyGetTimeUnit(float ticks) {
@@ -66,7 +57,7 @@ const ShinyTimeUnit* ShinyGetTimeUnit(float ticks) {
 
 /*---------------------------------------------------------------------------*/
 
-#if SHINY_PLATFORM == SHINY_PLATFORM_WIN32
+#if PLATFORM_TYPE == PLATFORM_TYPE_WINDOWS
 
 void ShinyGetTicks(shinytick_t *p) {
 	QueryPerformanceCounter((LARGE_INTEGER*)(p));
@@ -84,10 +75,11 @@ float ShinyGetTickInvFreq(void) {
 	return invfreq;
 }
 
+#endif
 
 /*---------------------------------------------------------------------------*/
 
-#elif SHINY_PLATFORM == SHINY_PLATFORM_POSIX
+#if PLATFORM_TYPE == PLATFORM_TYPE_POSIX
 
 void ShinyGetTicks(shinytick_t *p) {
 	struct timeval time;

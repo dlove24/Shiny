@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 #include "ShinyManager.h"
 
-#include <malloc.h>
 #include <memory.h>
 #include <string.h>
 #include <stdio.h>
